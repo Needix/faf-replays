@@ -1,0 +1,56 @@
+.scrollable-card-body {
+    overflow-y: scroll; /* Ensure scrolling remains functional */
+    position: relative;
+    scroll-snap-type: y mandatory; /* Enable snapping behavior */
+    height: 40vh; /* Adjust height as needed */
+    background-color: #242424;
+
+    /* Hide scrollbar */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer 10+ */
+}
+
+.scrollable-card-body::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.scroll-section {
+    height: 50vh; /* Match the height of scrollable-card-body */
+    scroll-snap-align: start; /* Align sections for snap scrolling */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background-color: #242424;
+    color: #fff;
+}
+
+/* Right-side indicator bar */
+.indicator-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: #242424;
+}
+
+.indicator {
+    height: 50%; /* Adjust for two sections */
+    width: 6px;
+    border-radius: 8px;
+    background: #242424;
+    transition: background 0.3s ease;
+}
+
+.indicator.active {
+    background: #2d536f; /* Highlight active indicator */
+}
+
+.tab-content > .active{
+    display: block;
+    width: 60vw;
+}

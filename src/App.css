@@ -1,0 +1,179 @@
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424 !important;
+}
+
+.bg-dark {
+    --bs-dark-rgb: 36, 36, 36;
+}
+
+.row {
+    background-color: #242424;
+}
+
+.col {
+    background-color: #242424;
+}
+
+.card {
+    background-color: #242424 !important;
+}
+
+.card-header {
+    background-color: #242424 !important;
+}
+
+.card-body {
+    background-color: #242424 !important;
+    color: #fff !important;
+}
+
+.body {
+    background-color: #242424;
+    color: #fff;
+}
+
+.accordion {
+    --bs-body-bg: #242424;
+    --bs-body-color: #fff;
+    --bs-accordion-active-bg: #242424;
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23AAAAAA' stroke-linecap='round' stroke-linejoin='round'><path d='M2 5L8 11L14 5'/></svg>") !important;
+    --bs-accordion-btn-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23AAAAAA' stroke-linecap='round' stroke-linejoin='round'><path d='M2 5L8 11L14 5'/></svg>") !important;
+}
+
+.accordion-item {
+    --bs-accordion-border-color: #aaaaaa !important;
+}
+
+.accordion-button:focus {
+    --bs-accordion-btn-focus-box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+    --bs-accordion-active-color: #fff;
+    --bs-accordion-active-bg: #323232;
+}
+
+.header {
+    padding-left: 25px;
+    background-color: #242424;
+}
+
+.logo {
+    will-change: filter;
+    transition: filter 100ms;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffff);
+}
+
+.logolink {
+    font-weight: 500;
+    font-size: 37px;
+    color: rgba(255, 255, 255, 0.87);
+    text-decoration: inherit;
+}
+
+.logolink:hover {
+    color: rgba(255, 255, 255, 0.87);
+}
+
+.link-uef {
+    color: #2d536f;
+    text-decoration: none;
+}
+
+.link-uef:hover {
+    color: #3a6c91;
+    text-decoration: underline;
+    filter: drop-shadow(0 0 2em #646cffff) drop-shadow(0 0 3em #6c73fd);
+}
+
+.link-aeon {
+    color: #075b1c;
+    text-decoration: none;
+}
+
+.link-aeon:hover {
+    color: #0a7324;
+    text-decoration: underline;
+    filter: drop-shadow(0 0 2em #0a7324) drop-shadow(0 0 3em #0e9a31);
+}
+
+.link-cybran {
+    color: #87200e;
+    text-decoration: none;
+}
+
+.link-cybran:hover {
+    color: #a02815;
+    text-decoration: underline;
+    filter: drop-shadow(0 0 2em #a02815) drop-shadow(0 0 3em #c2311a);
+}
+
+.link-seraphim {
+    color: #aa8313;
+    text-decoration: none;
+}
+
+.link-seraphim:hover {
+    color: #c39619;
+    text-decoration: underline;
+    filter: drop-shadow(0 0 4em #c39619) drop-shadow(0 0 3em #fff899);
+}
+
+.accordion-button {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+
+.btn-primary {
+    --bs-btn-bg: #242424 !important;
+    --bs-btn-border-color: #aaaaaa !important;
+}
+
+.btn-primary:hover {
+    --bs-btn-hover-bg: #323232 !important;
+    --bs-btn-hover-border-color: #aaaaaa !important;
+    filter: drop-shadow(0 0 2em #646cffff) drop-shadow(0 0 3em #6c73fd);
+}
+
+.btn-check:checked + .btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check) + .btn:active {
+    --bs-btn-active-bg: #686868;
+    --bs-btn-active-border-color: #aaaaaa;
+    color: var(--bs-btn-active-color);
+    background-color: var();
+    border-color: var(--bs-btn-active-border-color);
+}
+
+.card-title {
+    color: #fff !important;
+    font-size: 14px !important;
+    margin-top: 5px !important;
+}
+
+.list-group {
+    --bs-body-bg: #242424;
+    --bs-body-color: #fff;
+    --bs-border-color: #aaaaaa;
+}
+
+.custom-table {
+    --bs-table-bg: #242424 !important;
+    --bs-table-color: #aeaeae !important;
+    --bs-table-striped-bg: #303030 !important;
+    --bs-table-striped-color: #aeaeae !important;
+    --bs-table-active-bg: #242424 !important;
+    --bs-table-active-color: #fff !important;
+    --bs-table-hover-bg: #242424 !important;
+    --bs-table-hover-color: #fff !important;
+    --bs-table-border-color: #aaaaaa !important;
+    --bs-table-head-bg: #242424 !important;
+}

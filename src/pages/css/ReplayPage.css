@@ -1,0 +1,66 @@
+.form-control {
+    --bs-body-color: #fff;
+    --bs-body-bg: #242424;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.form-control::placeholder {
+    color: #aaa;
+}
+
+.accordion-body {
+    border-top: 1px solid #aaa;
+}
+
+.accordion-button:not(.collapsed) {
+    --bs-accordion-active-color: #fff;
+    --bs-accordion-active-bg: #323232;
+    box-shadow: none;
+}
+
+.spinner-color {
+    animation: spin 1s linear infinite, color-change 4s linear infinite;
+}
+
+/* Standard spinning animation for the spinner */
+@keyframes spin {
+    100% {
+        transform: rotate(360deg); /* Complete spin */
+    }
+}
+
+/* Color-changing animation */
+@keyframes color-change {
+    0% {
+        color: #aa8313;
+    }
+    25% {
+        color: #a02815;
+    }
+    50% {
+        color: #075b1c;
+    }
+    75% {
+        color: #2d536f;
+    }
+    100% {
+        color: #aa8313;
+    }
+}
+
+.preview-card {
+    height: 40vh;
+}
+
+.preview-card-graph {
+    height: 51.5vh;
+    max-height: 51.5vh;
+    overflow-y: auto;
+}
+
+.map-preview{
+    height: 30vh;
+}
