@@ -1,55 +1,45 @@
-import appConfig from "../AppConfig.ts";
 import LOG from "../utils/Logger.ts";
 
-import testIds from "../assets/testing/replay_ids_test.json";
-import testReplay from "../assets/testing/replay_test.json";
+import {Api} from "../api/Api.ts";
+
 
 class ApiController {
+    static async getReplayIds(page: number = 0, size: number = 10): Promise<{
+        content: number[];
+        totalPages: number
+    }> {
+        try {
+            LOG.debug(`Fetching replay IDs with page=${page}, size=${size}`);
 
-    private static baseUrl = appConfig.apiBaseUrl;
-    private static idsPath = appConfig.apiPaths.replayIds;
-    private static replayPath = appConfig.apiPaths.replays;
+            const response = await new Api().api.getAllReplayIds({page, size});
+            LOG.debug("Replay IDs response: ", response);
 
+            const content = (response?.data?.content || []).map((item: any) => Number(item));
+            const totalPages = response?.data?.totalPages || 0;
 
-    static async getReplayIdsTest() {
-            const data = testIds;
-            LOG.debug(JSON.stringify(data));
-            return data;
+            return {content, totalPages};
+        } catch (error) {
+            LOG.error("Error fetching replay IDs", error instanceof Object ? error : undefined);
+            return {content: [], totalPages: 0};
+        }
     }
 
-    static async getReplayTest(id:number) {
-        LOG.debug("Getting replay with id: " + id);
-        const data = testReplay;
-        LOG.debug(JSON.stringify(data));
-        return data;
-    }
-
-    static async getReplayIds(): Promise<number[]> {
-        LOG.debug("Fetching replay ids");
-        return fetch(this.baseUrl + this.idsPath)
-            .then(response => response.json()).then(
-            data => {
-                LOG.debug(data);
-                return data as number[];
-            }
-        ).catch(error => {
-            LOG.error(error)
-            return [];
-        });
-    }
-
+    /**
+     * Function to fetch replay data for a specific ID.
+     */
     static async getReplayData(id: number) {
-        LOG.debug("Getting replay with id: " + id);
-        return fetch(this.baseUrl + this.replayPath + "/" + id)
-            .then(response => response.json()).then(
-            data => {
-                LOG.debug(data);
-                return data;
-            }
-        ).catch(error => LOG.error(error));
+        try {
+            LOG.debug(`Fetching replay data for ID: ${id}`);
+
+            const replayData = await new Api().api.getReplayById(id);
+
+            LOG.debug("Replay data response: ", replayData);
+            return replayData;
+        } catch (error) {
+            LOG.error("Error fetching replay data", error instanceof Object ? error : undefined);
+            throw error;
+        }
     }
-
-
 }
 
 export default ApiController;

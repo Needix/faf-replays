@@ -9,7 +9,6 @@ import ReplayPreviewComponent from "../components/ReplayPreviewComponent.tsx";
 
 const ReplayPage = () => {
 
-    const [ids, setIds] = useState<number[]>([]);
     const [idsOnPage, setIdsOnPage] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -17,26 +16,18 @@ const ReplayPage = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        ApiController.getReplayIds().then(data => {
-            setIds(data);
-            const pageSize = 25;
-            setTotalPages(Math.ceil(data.length / pageSize));
+        ApiController.getReplayIds().then((data: { content: number[]; totalPages: number }) => {
+            setIdsOnPage(data.content);
+            setTotalPages(data.totalPages);
         });
     }, []);
 
-    useEffect(() => {
-        if (currentPage === 1) {
-            const pageSize = 25;
-            setIdsOnPage(ids.slice(0, pageSize));
-        }
-    }, [ids]);
-
     const handlePageChange = (page: number) => {
-        const pageSize = 25;
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize;
         setCurrentPage(page);
-        setIdsOnPage(ids.slice(start, end));
+        
+        ApiController.getReplayIds(page).then((data2: { content: number[]; totalPages: number }) => {
+            setIdsOnPage(data2.content);
+        });
     };
 
     const handleSearch = (searchTerm: string) => {
@@ -106,7 +97,8 @@ const ReplayPage = () => {
                                                             <Button className={"btn-sm float-end"}
                                                                     onClick={() => handlePreviewClicked(id)}>Preview</Button>
                                                             <Button className={"btn-sm float-start me-2"}
-                                                                    onClick={() => handleCopyIdClicked(id)}>Copy ID</Button>
+                                                                    onClick={() => handleCopyIdClicked(id)}>Copy
+                                                                ID</Button>
                                                         </Col>
                                                     </Row>
                                                 </Accordion.Body>
@@ -130,7 +122,7 @@ const ReplayPage = () => {
                     {!isLoading && previewData &&
                         <div>
                             <ReplayPreviewComponent
-                            data={previewData}
+                                data={previewData}
                             />
                         </div>
                     }
