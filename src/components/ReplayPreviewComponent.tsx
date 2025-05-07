@@ -1,6 +1,6 @@
 import {Player, ReplayPreviewComponentProps} from "./types/ReplayPreviewComponentProps.ts";
 import {Card, Col, Row, Table} from "react-bootstrap";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import LOG from "../utils/Logger.ts";
 
 import uefLogo from "../assets/uef.png";
@@ -11,12 +11,9 @@ import StringUtils from "../utils/StringUtils.ts";
 
 import map from "../assets/maps/dualgap_reworked.png";
 import TimeUtils from "../utils/TimeUtils.ts";
-import GraphOverallComponent from "./graph/GraphOverallComponent.tsx";
-import GraphUnitsBuiltComponent from "./graph/GraphUnitsBuiltComponent.tsx";
 
 import "./css/ReplayPreviewComponent.css";
-import GraphUnitsLostComponent from "./graph/GraphUnitsLostComponent.tsx";
-import GraphUnitsKilledComponent from "./graph/GraphUnitsKilledComponent.tsx";
+import ReplaySummaryGraphs from "./ReplaySummaryGraphs.tsx";
 
 const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
@@ -34,9 +31,6 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const randomSeed = data.randomSeed;
 
     const [playerData, setPlayerData] = useState<Player[]>([]);
-    const [currentSection, setCurrentSection] = useState(0);
-
-    const cardBodyRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const playerDataArray: Player[] = [];
@@ -63,31 +57,6 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
         setPlayerData(playerDataArray);
         LOG.debug(JSON.stringify(playerDataArray));
     }, [data]);
-
-    useEffect(() => {
-        const cardBody = cardBodyRef.current;
-        if (cardBody) cardBody.addEventListener("scroll", handleScroll);
-
-        return () => {
-            if (cardBody) cardBody.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
-
-    const handleScroll = () => {
-        const cardBody = cardBodyRef.current;
-
-        if (cardBody) {
-            const sectionHeight = cardBody.clientHeight; // Get the visible height of the container
-            const scrollTop = cardBody.scrollTop; // Get the scroll position
-            const totalSections = cardBody.childElementCount; // Number of sections
-
-            // Ensure we calculate the current section correctly
-            const sectionIndex = Math.round(scrollTop / sectionHeight);
-
-            // Prevent index out of bounds (if scrolling ends are imprecise)
-            setCurrentSection(Math.min(Math.max(sectionIndex, 0), totalSections - 1));
-        }
-    };
 
     LOG.debug(JSON.stringify(playerData));
 
@@ -239,37 +208,7 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
             </Row>
             <Row className={"mt-2"}>
                 <Col>
-                    <Card className={"preview-card-graph"}>
-                        <Card.Body className="scrollable-card-body" ref={cardBodyRef}>
-
-                            <div className="scroll-section">
-                                <GraphOverallComponent data={data}/>
-                            </div>
-
-
-                            <div className="scroll-section">
-                                <GraphUnitsBuiltComponent data={data}/>
-                            </div>
-
-                            <div className="scroll-section">
-                                <GraphUnitsLostComponent data={data}/>
-                            </div>
-
-                            <div className="scroll-section">
-                                <GraphUnitsKilledComponent data={data}/>
-                            </div>
-                        </Card.Body>
-
-
-                        <div className="indicator-container">
-                            {[...Array(4)].map((_, index) => (
-                                <div
-                                    key={index}
-                                    className={`indicator ${currentSection === index ? "active" : ""}`}
-                                ></div>
-                            ))}
-                        </div>
-                    </Card>
+                    <ReplaySummaryGraphs data={data}/>
                 </Col>
             </Row>
         </>
