@@ -12,15 +12,14 @@ const ReplayPage = () => {
     const [idsOnPage, setIdsOnPage] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [previewData, setPreviewData] = useState<ReplayData | undefined>(undefined);
+    const [searchTerm, setSearchTerm] = useState(""); // For holding user input
     const [previewData, setPreviewData] = useState<Replay | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
+    const debounceTimeout = useRef<number | undefined>(undefined); // UseRef for debounce timeout management
 
+    // Fetch default replays on initial load
     useEffect(() => {
-        ApiController.getReplayIds().then((data: { content: number[]; totalPages: number }) => {
-            setIdsOnPage(data.content);
-            setTotalPages(data.totalPages);
-        });
+        resetSearch();
     }, []);
 
     const handlePageChange = (page: number) => {
@@ -40,12 +39,22 @@ const ReplayPage = () => {
         }
     };
 
-    const handleSearch = (searchTerm: string) => {
-        const filteredIds = ids.filter((id) => id.toString().includes(searchTerm));
-        const pageSize = 25;
-        setTotalPages(Math.ceil(filteredIds.length / pageSize));
-        setCurrentPage(1); // Reset to the first page after a new search
-        setIdsOnPage(filteredIds.slice(0, pageSize)); // Show the first page of search results
+    const performSearch = (query: string, page: number = 0) => {
+        if (isLoading) return;
+
+        if (!query.trim()) {
+            // Reset to default if search is empty
+            resetSearch();
+            return;
+        }
+
+
+        setIsLoading(true);
+        ApiController.searchReplays({query: query, page: page}).then(data => {
+            setCurrentPage(page + 1);
+            setPageInformation(data.data as Page);
+            setIsLoading(false);
+        });
     };
 
     const resetSearch = () => {
@@ -118,9 +127,9 @@ const ReplayPage = () => {
                                     type="text"
                                     placeholder="Search..."
                                     className="form-control form-control-sm w-50"
-                                    onChange={(e) => {
-                                        handleSearch(e.target.value);
-                                    }}
+                                    value={searchTerm}
+                                    onChange={handleSearchInput} // On input change, start debounce logic
+                                    onKeyDown={handleSearchEnter} // On pressing Enter, perform search
                                 />
                             </div>
                         </Card.Header>
@@ -132,7 +141,6 @@ const ReplayPage = () => {
                             />
                             <Accordion defaultActiveKey="0" flush>
                                 <div style={{maxHeight: "79vh", overflowY: "auto", overflowX: "hidden"}}>
-
                                     {idsOnPage.map(id => {
                                         return (
                                             <Accordion.Item eventKey={"" + id} key={id}>
