@@ -198,10 +198,10 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
                     <Card className={"preview-card"}>
                         <Card.Title>
                                 <span className={"ms-3 pt-2"}
-                                      style={{fontSize: "20px"}}>Map: {StringUtils.ellipsis(data.mapName.split("/")[data.mapName.split("/").length - 1], 25)}</span>
+                                      style={{fontSize: "20px"}}>Map: {StringUtils.ellipsis(mapName.split("/")[mapName.split("/").length - 1], 25)}</span>
                         </Card.Title>
                         <Card.Body>
-                            <img className={"map-preview"} src={map} alt={data.mapName}/>
+                            <img className={"map-preview"} src={map} alt={mapName}/>
                         </Card.Body>
                     </Card>
                 </Col>
