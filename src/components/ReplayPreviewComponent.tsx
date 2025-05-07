@@ -18,17 +18,17 @@ import ReplaySummaryGraphs from "./ReplaySummaryGraphs.tsx";
 const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
 
-    const title = data.replayTitle;
-    const mapName = data.mapName;
-    const gameStart = data.gameStart;
-    const gameEnd = data.gameEnd;
-    const gameVersion = data.supComVersion;
-    const playerCount = data.numberOfPlayers;
-    const featureMod = data.featuredMod;
-    const replayVersion = data.replayVersion;
-    const recorder = data.recorder;
-    const cheatsEnabled = data.cheatsEnabled;
-    const randomSeed = data.randomSeed;
+    const title = data.replayTitle ?? "Unknown";
+    const mapName = data.mapName ?? "Unknown";
+    const gameStart = data.gameStart ?? -1;
+    const gameEnd = data.gameEnd ?? -1;
+    const gameVersion = data.supComVersion ?? "Unknown";
+    const playerCount = data.numberOfPlayers ?? -1;
+    const featureMod = data.featuredMod ?? "Unknown";
+    const replayVersion = data.replayVersion ?? -1;
+    const recorder = data.recorder ?? "Unknown";
+    const cheatsEnabled = data.cheatsEnabled ?? false;
+    const randomSeed = data.randomSeed ?? -1;
 
     const [playerData, setPlayerData] = useState<Player[]>([]);
 
@@ -37,19 +37,15 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
 
         if (data.players && data.playerScores) {
             Object.entries(data.players).forEach(([playerId, player]) => {
-                const playerScore = data.playerScores.find(score => score.name === player.name); // Find the score by matching `name` or fallback to a default
+                const playerScore = data.playerScores?.find(score => score.name === player.name); // Find the score by matching `name` or fallback to a default
                 const playerDataEntry: Player = {
-                    id: player.id,
-                    name: player.name,
+                    id: player.id ?? 0,
+                    name: player.name ?? "",
                     position: parseInt(playerId),
-                    playerId: player.playerId,
-                    score: 0,
-                    faction: 0
+                    playerId: player.playerId ?? 0,
+                    score: playerScore?.general?.score ?? -1,
+                    faction: playerScore?.faction ?? -1
                 };
-                if (playerScore) {
-                    playerDataEntry.score = playerScore.general.score;
-                    playerDataEntry.faction = playerScore.faction;
-                }
                 playerDataArray.push(playerDataEntry);
             });
         }

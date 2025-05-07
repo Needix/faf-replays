@@ -1,7 +1,7 @@
-import {ReplayData} from "../../types/Common.ts";
+import {Replay} from "../../api/Api.ts";
 
 export interface ReplayPreviewComponentProps {
-    data: ReplayData
+    data: Replay
 }
 
 export interface Player {

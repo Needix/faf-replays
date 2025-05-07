@@ -1,5 +1,5 @@
-import {ReplayData} from "../../types/Common.ts";
+import {Replay} from "../../api/Api.ts";
 
 export interface GraphComponentProps {
-    data: ReplayData;
+    data: Replay;
 }

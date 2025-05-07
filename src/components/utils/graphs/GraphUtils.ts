@@ -1,5 +1,5 @@
-import {ReplayData} from "../../../types/Common.ts";
 import LOG from "../../../utils/Logger.ts";
+import {ReplayPlayerSummary} from "../../../api/Api.ts";
 
 class GraphUtils {
 
@@ -56,300 +56,298 @@ class GraphUtils {
         return option;
     }
 
-    static getScoreOption(data: ReplayData) {
-        LOG.debug("Getting score option", data);
-        const playerScores = data.playerScores.map(player => player.general.score);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getScoreOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting score option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.general?.score ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-
-
-    static getTotalMassOption(data: ReplayData) {
-        LOG.debug("Getting total mass option", data);
-        const playerScores = data.playerScores.map(player => player.resources.massin.total);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalMassOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total mass option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.resources?.massin?.total ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalEnergyOption(data: ReplayData) {
-        LOG.debug("Getting total energy option", data);
-        const playerScores = data.playerScores.map(player => player.resources.energyin.total);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalEnergyOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total energy option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.resources?.energyin?.total ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalUnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total units option", data);
-        const playerScores = data.playerScores.map(player => player.units.air.built + player.units.land.built + player.units.naval.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalUnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => (player.units?.air?.built ?? 0) + (player.units?.land?.built ?? 0) + (player.units?.naval?.built ?? 0));
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalStructuresBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total structures built option", data);
-        const playerScores = data.playerScores.map(player => player.units.structures.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalStructuresBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total structures built option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.structures?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalAirUnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total air units option", data);
-        const playerScores = data.playerScores.map(player => player.units.air.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalAirUnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total air units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.air?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalLandUnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total land units option", data);
-        const playerScores = data.playerScores.map(player => player.units.land.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalLandUnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total land units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.land?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalNavalUnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total naval units option", data);
-        const playerScores = data.playerScores.map(player => player.units.naval.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalNavalUnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total naval units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.naval?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech1UnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total tech1 units option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech1.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech1UnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech1 units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech1?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech2UnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total tech2 units option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech2.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech2UnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech2 units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech2?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech3UnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total tech3 units option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech3.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech3UnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech3 units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech3?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech4UnitsBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total tech4 units option", data);
-        const playerScores = data.playerScores.map(player => player.units.experimental.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech4UnitsBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech4 units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.experimental?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTransportationBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total transportation units option", data);
-        const playerScores = data.playerScores.map(player => player.units.transportation.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTransportationBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total transportation units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.transportation?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalSacuBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total sacu units option", data);
-        const playerScores = data.playerScores.map(player => player.units.sacu.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalSacuBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total sacu units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.sacu?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalEngineerBuiltOption(data: ReplayData) {
-        LOG.debug("Getting total engineer units option", data);
-        const playerScores = data.playerScores.map(player => player.units.engineer.built);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalEngineerBuiltOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total engineer units option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.engineer?.built ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalStructuresLostOption(data: ReplayData) {
-        LOG.debug("Getting total structures lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.structures.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalStructuresLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total structures lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.structures?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalAirUnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total air units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.air.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalAirUnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total air units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.air?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalLandUnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total land units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.land.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalLandUnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total land units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.land?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalNavalUnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total naval units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.naval.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalNavalUnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total naval units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.naval?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech1UnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total tech1 units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech1.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech1UnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech1 units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech1?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech2UnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total tech2 units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech2.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech2UnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech2 units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech2?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech3UnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total tech3 units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech3.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech3UnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech3 units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech3?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech4UnitsLostOption(data: ReplayData) {
-        LOG.debug("Getting total tech4 units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.experimental.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech4UnitsLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech4 units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.experimental?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTransportationLostOption(data: ReplayData) {
-        LOG.debug("Getting total transportation units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.transportation.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTransportationLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total transportation units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.transportation?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalSacuLostOption(data: ReplayData) {
-        LOG.debug("Getting total sacu units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.sacu.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalSacuLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total sacu units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.sacu?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalEngineerLostOption(data: ReplayData) {
-        LOG.debug("Getting total engineer units lost option", data);
-        const playerScores = data.playerScores.map(player => player.units.engineer.lost);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalEngineerLostOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total engineer units lost option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.engineer?.lost ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalStructuresKilledOption(data: ReplayData) {
-        LOG.debug("Getting total structures killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.structures.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalStructuresKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total structures killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.structures?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalAirUnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total air units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.air.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalAirUnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total air units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.air?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalLandUnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total land units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.land.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalLandUnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total land units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.land?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalNavalUnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total naval units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.naval.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalNavalUnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total naval units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.naval?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech1UnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total tech1 units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech1.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech1UnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech1 units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech1?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech2UnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total tech2 units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech2.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech2UnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech2 units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech2?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech3UnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total tech3 units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.tech3.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech3UnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech3 units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.tech3?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTech4UnitsKilledOption(data: ReplayData) {
-        LOG.debug("Getting total tech4 units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.experimental.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTech4UnitsKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total tech4 units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.experimental?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalTransportationKilledOption(data: ReplayData) {
-        LOG.debug("Getting total transportation units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.transportation.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalTransportationKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total transportation units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.transportation?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalSacuKilledOption(data: ReplayData) {
-        LOG.debug("Getting total s-acu units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.sacu.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalSacuKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total s-acu units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.sacu?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }
 
-    static getTotalEngineerKilledOption(data: ReplayData) {
-        LOG.debug("Getting total engineer units killed option", data);
-        const playerScores = data.playerScores.map(player => player.units.engineer.kills);
-        const playerNames = data.playerScores.map(player => player.name);
+    static getTotalEngineerKilledOption(playerScoreData: ReplayPlayerSummary[]) {
+        LOG.debug("Getting total engineer units killed option", playerScoreData);
+        const playerScores = playerScoreData.map(player => player.units?.engineer?.kills ?? 0);
+        const playerNames = playerScoreData.map(player => player.name ?? "Unknown");
 
         return this.getBarGraph(playerScores, playerNames);
     }

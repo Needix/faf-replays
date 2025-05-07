@@ -6,7 +6,7 @@ import {GraphComponentProps} from "../types/GraphComponentProps.ts";
 
 const GraphUnitsKilledComponent = (props: GraphComponentProps) => {
 
-    const data = props.data;
+    const data = props.data.playerScores ?? [];
 
     return (
         <Row>

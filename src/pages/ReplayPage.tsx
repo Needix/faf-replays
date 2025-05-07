@@ -1,18 +1,19 @@
+import {useEffect, useRef, useState} from "react";
 import NavbarComponent from "../components/NavbarComponent.tsx";
 import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
-import {useEffect, useState} from "react";
-import ApiController from "../controller/ApiController.ts";
 import PaginationComponent from "../components/PaginationComponent.tsx";
 import "./css/ReplayPage.css";
-import {ReplayData} from "../types/Common.ts";
+import {Api, Page, Replay} from "../api/Api.ts";
 import ReplayPreviewComponent from "../components/ReplayPreviewComponent.tsx";
 
 const ReplayPage = () => {
+    const ApiController = new Api().api;
 
     const [idsOnPage, setIdsOnPage] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [previewData, setPreviewData] = useState<ReplayData | undefined>(undefined);
+    const [previewData, setPreviewData] = useState<Replay | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -23,11 +24,20 @@ const ReplayPage = () => {
     }, []);
 
     const handlePageChange = (page: number) => {
+        if (isLoading) return;
+
         setCurrentPage(page);
-        
-        ApiController.getReplayIds(page).then((data2: { content: number[]; totalPages: number }) => {
-            setIdsOnPage(data2.content);
-        });
+
+        if (searchTerm.length == 0) {
+            setIsLoading(true);
+            ApiController.getAllReplayIds({page: page - 1}).then(data => {
+                setPageInformation(data.data as Page);
+                setIsLoading(false);
+            });
+
+        } else {
+            performSearch(searchTerm, page - 1);
+        }
     };
 
     const handleSearch = (searchTerm: string) => {
@@ -38,16 +48,52 @@ const ReplayPage = () => {
         setIdsOnPage(filteredIds.slice(0, pageSize)); // Show the first page of search results
     };
 
-    const handlePreviewClicked = (id: number) => {
-        setIsLoading(true);
-        ApiController.getReplayData(id).then(data => {
-            setTimeout(() => {
-                setIsLoading(false);
-                setPreviewData(data as unknown as ReplayData);
-            }, 2000);
-        })
+    const resetSearch = () => {
+        ApiController.getAllReplayIds().then(data => {
+            setPageInformation(data.data as Page);
+        });
     }
 
+    function setPageInformation(page: Page) {
+        setIdsOnPage(page.content ? page.content.map(id => Number(id)) : []);
+        setTotalPages(page.totalPages ?? 1);
+    }
+
+    const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value); // Update the search term state
+
+        // If a previous debounce timeout exists, clear it
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+        }
+
+        // Start a new debounce timeout
+        debounceTimeout.current = window.setTimeout(() => {
+            performSearch(value); // Trigger the search after the graze period
+        }, 500); // 500ms debounce period
+    };
+
+    const handleSearchEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            // If "Enter" is pressed, immediately trigger the search and clear the debounce
+            performSearch(searchTerm);
+            if (debounceTimeout.current) {
+                clearTimeout(debounceTimeout.current);
+            }
+        }
+    };
+
+
+    const handlePreviewClicked = (id: number) => {
+        setIsLoading(true);
+        ApiController.getReplayById(id).then(data => {
+            setTimeout(() => {
+                setIsLoading(false);
+                setPreviewData(data.data as Replay);
+            });
+        })
+    }
 
     const handleCopyIdClicked = (id: number) => {
         navigator.clipboard.writeText(id.toString())
@@ -131,4 +177,5 @@ const ReplayPage = () => {
         </div>
     )
 }
+
 export default ReplayPage;
