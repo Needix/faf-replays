@@ -57,6 +57,40 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
             });
     };
 
+    function downloadReplay(replayId: number) {
+        ApiController.getReplayFile(replayId).then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to download replay file: ${response.statusText}`);
+            }
+
+            const fileName = `${replayId}.fafreplay`;
+            const mimeType = 'application/octet-stream';
+
+            // Read the response as a Blob
+            response.blob().then((replayBlob) => {
+                // Create a temporary URL for the downloaded file
+                const fileUrl = URL.createObjectURL(replayBlob);
+
+                // Create an invisible anchor element to trigger the download
+                const a = document.createElement('a');
+                a.href = fileUrl;
+                a.download = fileName;
+                a.type = mimeType;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                // Revoke the temporary URL after opening
+                URL.revokeObjectURL(fileUrl);
+            }).catch((error) => {
+                console.error('Error viewing replay:', error);
+                alert('An error occurred while trying to view the replay. Please try again.');
+            });
+
+
+        });
+    }
+
     return (
         <Card className={""}>
             <Card.Header>
@@ -81,10 +115,14 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
                                         <Row>
                                             <Col>
                                                 <Button className={"btn-sm float-end"}
-                                                        onClick={() => handlePreviewClicked(id)}>Preview</Button>
+                                                        onClick={() => handlePreviewClicked(id)}>
+                                                    Preview</Button>
+                                                <Button className={"btn-sm float-end me-2"}
+                                                        onClick={() => downloadReplay(id)}>
+                                                    Download</Button>
                                                 <Button className={"btn-sm float-start me-2"}
-                                                        onClick={() => handleCopyIdClicked(id)}>Copy
-                                                    ID</Button>
+                                                        onClick={() => handleCopyIdClicked(id)}>
+                                                    Copy ID</Button>
                                             </Col>
                                         </Row>
                                     </Accordion.Body>
