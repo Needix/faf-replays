@@ -264,10 +264,10 @@ export interface UnitStats {
 }
 
 export interface Page {
-    /** @format int64 */
-    totalElements?: number;
     /** @format int32 */
     totalPages?: number;
+    /** @format int64 */
+    totalElements?: number;
     /** @format int32 */
     size?: number;
     content?: object[];
@@ -288,9 +288,9 @@ export interface PageableObject {
     sort?: SortObject;
     /** @format int32 */
     pageNumber?: number;
+    paged?: boolean;
     /** @format int32 */
     pageSize?: number;
-    paged?: boolean;
     unpaged?: boolean;
 }
 
@@ -702,6 +702,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /**
          * No description
          *
+         * @tags replay-controller
+         * @name GetReplayFile
+         * @summary Download a FAF replay file by its ID
+         * @request GET:/api/v1/replays/download/{replayId}
+         */
+        getReplayFile: (replayId: number, params: RequestParams = {}) =>
+            this.request<void, void>({
+                path: `/api/v1/replays/download/${replayId}`,
+                method: "GET",
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
          * @tags player-controller
          * @name GetPlayerStatsSummary
          * @summary A summary of the stats a given playername
@@ -740,7 +755,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             },
             params: RequestParams = {},
         ) =>
-            this.request<string, void>({
+            this.request<Page, void>({
                 path: `/api/v1/players/search`,
                 method: "GET",
                 query: query,
@@ -771,7 +786,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             },
             params: RequestParams = {},
         ) =>
-            this.request<string, void>({
+            this.request<Page, void>({
                 path: `/api/v1/players/list`,
                 method: "GET",
                 query: query,
