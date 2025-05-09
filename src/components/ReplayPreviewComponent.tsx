@@ -9,7 +9,6 @@ import cybranLogo from "../assets/cybran.png";
 import seraphimLogo from "../assets/seraphim.png";
 import StringUtils from "../utils/StringUtils.ts";
 
-import map from "../assets/maps/dualgap_reworked.png";
 import TimeUtils from "../utils/TimeUtils.ts";
 
 import "./css/ReplayPreviewComponent.css";
@@ -19,7 +18,7 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
 
     const title = data.replayTitle ?? "Unknown";
-    const mapName = data.mapName ?? "Unknown";
+    const completeMapPath = data.mapName ?? "Unknown";
     const gameStart = data.gameStart ?? -1;
     const gameEnd = data.gameEnd ?? -1;
     const gameVersion = data.supComVersion ?? "Unknown";
@@ -29,6 +28,10 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const recorder = data.recorder ?? "Unknown";
     const cheatsEnabled = data.cheatsEnabled ?? false;
     const randomSeed = data.randomSeed ?? -1;
+
+    const [imageError, setImageError] = useState(false);
+    const mapName = completeMapPath.split('/')[2].toLowerCase().replace('.scmap', '');
+    const url = `https://content.faforever.com/maps/previews/large/${mapName}.png`;
 
     const [playerData, setPlayerData] = useState<Player[]>([]);
 
@@ -75,7 +78,7 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
                                 <tr>
                                     <td className="py-0"><span>Map </span></td>
                                     <td className="py-0"><span
-                                        title={mapName}>{StringUtils.ellipsis(mapName, 60)}</span></td>
+                                        title={completeMapPath}>{StringUtils.ellipsis(completeMapPath, 60)}</span></td>
                                 </tr>
                                 <tr>
                                     <td className="py-0"><span>Duration </span></td>
@@ -194,10 +197,19 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
                     <Card className={"preview-card"}>
                         <Card.Title>
                                 <span className={"ms-3 pt-2"}
-                                      style={{fontSize: "20px"}}>Map: {StringUtils.ellipsis(mapName.split("/")[mapName.split("/").length - 1], 25)}</span>
+                                      style={{fontSize: "20px"}}>Map: {StringUtils.ellipsis(mapName, 25)}</span>
                         </Card.Title>
                         <Card.Body>
-                            <img className={"map-preview"} src={map} alt={mapName}/>
+                            {!imageError ? (
+                                <img
+                                    className={"map-preview"}
+                                    src={url}
+                                    alt={completeMapPath}
+                                    onError={() => setImageError(true)}
+                                />
+                            ) : (
+                                <span className="no-image-text">No image</span>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>
