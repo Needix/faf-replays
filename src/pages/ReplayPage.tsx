@@ -1,8 +1,8 @@
 import NavbarComponent from "../components/NavbarComponent.tsx";
 import {Col, Row} from "react-bootstrap";
 import "./css/ReplayPage.css";
-import ReplayPreviewComponent from "../components/ReplayPreviewComponent.tsx";
-import ReplayListComponent from "../components/ReplayListComponent.tsx";
+import ReplayPreviewComponent from "../components/replay/ReplayPreviewComponent.tsx";
+import ReplayListComponent from "../components/replay/ReplayListComponent.tsx";
 import {useState} from "react";
 import {Replay} from "../api/Api.ts";
 

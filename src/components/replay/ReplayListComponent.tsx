@@ -1,8 +1,8 @@
 import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
-import PaginationComponent from "./PaginationComponent.tsx";
-import {Api, Page, Replay} from "../api/Api.ts";
+import PaginationComponent from "../PaginationComponent.tsx";
+import {Api, Page, Replay} from "../../api/Api.ts";
 import {useState} from "react";
-import SearchComponent from "./SearchComponent.tsx";
+import SearchComponent from "../SearchComponent.tsx";
 
 const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
     setPreviewData: (data: Replay) => void;

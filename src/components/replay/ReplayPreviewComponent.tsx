@@ -1,17 +1,17 @@
-import {Player, ReplayPreviewComponentProps} from "./types/ReplayPreviewComponentProps.ts";
+import {Player, ReplayPreviewComponentProps} from "../types/ReplayPreviewComponentProps.ts";
 import {Card, Col, Row, Table} from "react-bootstrap";
 import {useEffect, useState} from "react";
-import LOG from "../utils/Logger.ts";
+import LOG from "../../utils/Logger.ts";
 
-import uefLogo from "../assets/uef.png";
-import aeonLogo from "../assets/aeon.png";
-import cybranLogo from "../assets/cybran.png";
-import seraphimLogo from "../assets/seraphim.png";
-import StringUtils from "../utils/StringUtils.ts";
+import uefLogo from "../../assets/uef.png";
+import aeonLogo from "../../assets/aeon.png";
+import cybranLogo from "../../assets/cybran.png";
+import seraphimLogo from "../../assets/seraphim.png";
+import StringUtils from "../../utils/StringUtils.ts";
 
-import TimeUtils from "../utils/TimeUtils.ts";
+import TimeUtils from "../../utils/TimeUtils.ts";
 
-import "./css/ReplayPreviewComponent.css";
+import "../css/ReplayPreviewComponent.css";
 import ReplaySummaryGraphs from "./ReplaySummaryGraphs.tsx";
 
 const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {

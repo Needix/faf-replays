@@ -1,10 +1,10 @@
 import {Card} from "react-bootstrap";
 import {useEffect, useRef, useState} from "react";
-import GraphOverallComponent from "./graph/GraphOverallComponent.tsx";
-import GraphUnitsBuiltComponent from "./graph/GraphUnitsBuiltComponent.tsx";
-import GraphUnitsLostComponent from "./graph/GraphUnitsLostComponent.tsx";
-import GraphUnitsKilledComponent from "./graph/GraphUnitsKilledComponent.tsx";
-import {ReplayPreviewComponentProps} from "./types/ReplayPreviewComponentProps.ts";
+import GraphOverallComponent from "../graph/GraphOverallComponent.tsx";
+import GraphUnitsBuiltComponent from "../graph/GraphUnitsBuiltComponent.tsx";
+import GraphUnitsLostComponent from "../graph/GraphUnitsLostComponent.tsx";
+import GraphUnitsKilledComponent from "../graph/GraphUnitsKilledComponent.tsx";
+import {ReplayPreviewComponentProps} from "../types/ReplayPreviewComponentProps.ts";
 
 
 const ReplaySummaryGraphs = (props: ReplayPreviewComponentProps) => {
