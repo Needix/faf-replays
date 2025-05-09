@@ -1,34 +1,60 @@
 import {ReplayPreviewComponentProps} from "../types/ReplayPreviewComponentProps.ts";
-import {Col, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 
 import "../css/ReplayPreviewComponent.css";
-import ReplaySummaryGraphs from "./ReplaySummaryGraphs.tsx";
 import ReplayGameDetailsComponent from "./ReplayGameDetailsComponent.tsx";
 import ReplayGameLobbyComponent from "./ReplayGameLobbyComponent.tsx";
-import ReplayMapPreviewComponent from "./ReplayMapPreviewComponent.tsx";
+import {useState} from "react";
+import ReplaySummaryGraphs from "./ReplaySummaryGraphs.tsx";
 
 const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
 
+    const [selectedOption, setSelectedOption] = useState("Game Details");
+
+    // Map of menu options to components
+    const componentsMap: Record<string, React.ReactNode> = {
+        "Game Details": <ReplayGameDetailsComponent data={data}/>,
+        "Lobby": <ReplayGameLobbyComponent data={data}/>,
+        "Analysis": <ReplaySummaryGraphs data={data}/>
+    };
+
+    // Menu options
+    const options = ["Game Details", "Lobby", "Analysis"];
+
+    // Color classes to cycle through
+    const colorClasses = ["primary", "success", "danger", "warning"];
+
     return (
-        <>
-            <Row>
-                <Col>
-                    <ReplayGameDetailsComponent data={data}/>
-                </Col>
-                <Col sm={"3"}>
-                    <ReplayGameLobbyComponent data={data}/>
-                </Col>
-                <Col sm={"3"}>
-                    <ReplayMapPreviewComponent data={data}/>
-                </Col>
-            </Row>
-            <Row className={"mt-2"}>
-                <Col>
-                    <ReplaySummaryGraphs data={data}/>
-                </Col>
-            </Row>
-        </>
-    )
+        <Row className="replay-preview-container">
+            {/* Button List */}
+            <Col md={2}>
+                <div className="button-list">
+                    {options.map((option, index
+                    ) => (
+                        <Button
+                            key={option}
+                            variant={
+                                selectedOption === option
+                                    ? colorClasses[index % colorClasses.length]
+                                    : `outline-${colorClasses[index % colorClasses.length]}`
+                            }
+                            className="menu-button nav-item small-tabs w-100"
+                            onClick={() => setSelectedOption(option)}
+                        >
+                            {option}
+                        </Button>
+                    ))}
+                </div>
+            </Col>
+
+            {/* Dynamic Content */}
+            <Col md={10}>
+                {/*<div>*/}
+                {componentsMap[selectedOption]}
+                {/*</div>*/}
+            </Col>
+        </Row>
+    );
 }
 export default ReplayPreviewComponent;

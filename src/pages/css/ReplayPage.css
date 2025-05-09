@@ -52,15 +52,15 @@
 }
 
 .preview-card {
-    height: 40vh;
+    height: 42vh;
 }
 
 .preview-card-graph {
-    height: 51.5vh;
-    max-height: 51.5vh;
+    height: 52vh;
+    max-height: 52vh;
     overflow-y: auto;
 }
 
-.map-preview{
+.map-preview {
     height: 30vh;
 }

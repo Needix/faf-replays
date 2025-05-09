@@ -2,7 +2,7 @@
     overflow-y: scroll; /* Ensure scrolling remains functional */
     position: relative;
     scroll-snap-type: y mandatory; /* Enable snapping behavior */
-    height: 40vh; /* Adjust height as needed */
+    /*height: 40vh; !* Adjust height as needed *!*/
     background-color: #242424;
 
     /* Hide scrollbar */
@@ -50,7 +50,22 @@
     background: #2d536f; /* Highlight active indicator */
 }
 
-.tab-content > .active{
+.tab-content > .active {
     display: block;
-    width: 60vw;
+    width: 50vw;
+}
+
+
+.replay-preview-container {
+    padding: 20px;
+}
+
+.button-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-button {
+    width: 100%;
 }
