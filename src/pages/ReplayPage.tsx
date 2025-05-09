@@ -5,6 +5,7 @@ import PaginationComponent from "../components/PaginationComponent.tsx";
 import "./css/ReplayPage.css";
 import {Api, Page, Replay} from "../api/Api.ts";
 import ReplayPreviewComponent from "../components/ReplayPreviewComponent.tsx";
+import ReplayListComponent from "../components/ReplayListComponent.tsx";
 
 const ReplayPage = () => {
     const ApiController = new Api().api;
@@ -119,50 +120,11 @@ const ReplayPage = () => {
             <NavbarComponent/>
             <Row className={"mt-2"} style={{maxWidth: "100vw"}}>
                 <Col sm={"3"} className={"ms-2"}>
-                    <Card className={""}>
-                        <Card.Header>
-                            <div className="d-flex justify-content-between align-items-center mb-0">
-                                <span style={{color: "#fff"}} className={"ms-2"}>Available Replays</span>
-                                <input
-                                    type="text"
-                                    placeholder="Search..."
-                                    className="form-control form-control-sm w-50"
-                                    value={searchTerm}
-                                    onChange={handleSearchInput} // On input change, start debounce logic
-                                    onKeyDown={handleSearchEnter} // On pressing Enter, perform search
-                                />
-                            </div>
-                        </Card.Header>
-                        <Card.Body>
-                            <PaginationComponent
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                onPageChange={(page) => handlePageChange(page)}
-                            />
-                            <Accordion defaultActiveKey="0" flush>
-                                <div style={{maxHeight: "79vh", overflowY: "auto", overflowX: "hidden"}}>
-                                    {idsOnPage.map(id => {
-                                        return (
-                                            <Accordion.Item eventKey={"" + id} key={id}>
-                                                <Accordion.Header>Replay: {id}</Accordion.Header>
-                                                <Accordion.Body>
-                                                    <Row>
-                                                        <Col>
-                                                            <Button className={"btn-sm float-end"}
-                                                                    onClick={() => handlePreviewClicked(id)}>Preview</Button>
-                                                            <Button className={"btn-sm float-start me-2"}
-                                                                    onClick={() => handleCopyIdClicked(id)}>Copy
-                                                                ID</Button>
-                                                        </Col>
-                                                    </Row>
-                                                </Accordion.Body>
-                                            </Accordion.Item>
-                                        );
-                                    })}
-                                </div>
-                            </Accordion>
-                        </Card.Body>
-                    </Card>
+                    <ReplayListComponent
+                        setPreviewData={setPreviewData}
+                        setIsLoading={setIsLoading}
+                        isLoading={isLoading}
+                    />
                 </Col>
                 <Col>
                     {isLoading &&
