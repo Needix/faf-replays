@@ -15,7 +15,8 @@ const ReplayMapPreviewComponent = (props: ReplayPreviewComponentProps) => {
     return (<Card className={"preview-card"}>
         <Card.Title>
                                 <span className={"ms-3 pt-2"}
-                                      style={{fontSize: "20px"}}>Map: {StringUtils.ellipsis(mapName, 25)}</span>
+                                      style={{fontSize: "20px"}}
+                                      title={mapName}>Map: {StringUtils.ellipsis(mapName, 25)}</span>
         </Card.Title>
         <Card.Body>
             {!imageError ? (
