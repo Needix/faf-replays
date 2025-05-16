@@ -69,10 +69,8 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
     const handlePreviewClicked = (id: number) => {
         setIsLoading(true);
         ApiController.getReplayById(id).then(data => {
-            setTimeout(() => {
-                setIsLoading(false);
-                setPreviewData(data.data as Replay);
-            });
+            setIsLoading(false);
+            setPreviewData(data.data as Replay);
         }).catch(error => {
             console.error(error);
             alert("Could open replay. Please try again.");
