@@ -1,8 +1,9 @@
 import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
 import PaginationComponent from "../PaginationComponent.tsx";
 import {Api, Page, Replay} from "../../api/Api.ts";
-import {useState} from "react";
-import SearchComponent from "../SearchComponent.tsx";
+import {useEffect, useState} from "react";
+import SearchWithFilters from "../SearchWithFilters.tsx";
+import {Filters} from "../utils/Filters.tsx";
 
 const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
     setPreviewData: (data: Replay) => void;
@@ -15,18 +16,43 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState(""); // For holding user input
+    const [filters, setFilters] = useState<Filters>({
+        completeStatus: "all",
+        mods: [],
+        gameTypes: [],
+        numberOfPlayers: {min: null, max: null},
+        timeFrame: {start: null, end: null},
+        rankedOnly: false
+    }); // For holding user input
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        performSearch(searchTerm, page - 1);
+        performSearch(searchTerm, filters, page - 1);
     };
 
-    const performSearch = (searchTerm: string, page: number = 0) => {
+    // Fetch default replays on initial load
+    useEffect(() => {
+        performSearch("", filters);
+    }, []);
+
+    const performSearch = (searchTerm: string, filter: Filters, page: number = 0) => {
         if (isLoading) return;
         setIsLoading(true);
 
         setSearchTerm(searchTerm);
-        ApiController.searchReplays({query: searchTerm, page}).then(data => {
+        setFilters(filter);
+        ApiController.searchReplays({
+            query: searchTerm,
+            completeStatus: filter.completeStatus,
+            mods: filter.mods,
+            gameTypes: filter.gameTypes,
+            numberOfPlayersMin: filter.numberOfPlayers.min ?? undefined,
+            numberOfPlayersMax: filter.numberOfPlayers.max ?? undefined,
+            timeFrameStart: filter.timeFrame.start?.toISOString() ?? undefined,
+            timeFrameEnd: filter.timeFrame.end?.toISOString() ?? undefined,
+            rankedOnly: filter.rankedOnly,
+            page
+        }).then(data => {
             setPageInformation(data.data as Page);
             setIsLoading(false);
         }).catch(error => {
@@ -100,8 +126,8 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
             <Card.Header>
                 <div className="d-flex justify-content-between align-items-center mb-0">
                     <span style={{color: "#fff"}} className={"ms-2"}>Available Replays</span>
-                    <SearchComponent performSearch={performSearch}/>
                 </div>
+                <SearchWithFilters performFilteredSearch={performSearch}/>
             </Card.Header>
             <Card.Body>
                 <PaginationComponent
