@@ -99,7 +99,11 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
     }
 
     function getPlayerRating(player: ReplayPlayer) {
-        return <div style={{textAlign: "right"}}>{player.armyInformation?.["PL"]?.toString() ?? "1500"}</div>
+        const rating = Number.parseInt(player.armyInformation?.["PL"]?.toString() ?? "1500");
+        const mean = Number.parseInt(player.armyInformation?.["MEAN"]?.toString() ?? "0");
+        const ratingAdjustment = mean - rating;
+        return <div style={{textAlign: "right"}}
+                    title={rating + " (+/-" + ratingAdjustment + ")"}>{mean}</div>
     }
 
     function getPlayerGamesPlayed(player: ReplayPlayer) {
