@@ -264,10 +264,10 @@ export interface UnitStats {
 }
 
 export interface Page {
-    /** @format int32 */
-    totalPages?: number;
     /** @format int64 */
     totalElements?: number;
+    /** @format int32 */
+    totalPages?: number;
     /** @format int32 */
     size?: number;
     content?: object[];
@@ -598,6 +598,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         searchReplays: (
             query: {
                 query: string;
+                /** @default "all" */
+                completeStatus?: string;
+                mods?: string[];
+                gameTypes?: string[];
+                /** @format int32 */
+                numberOfPlayersMin?: number;
+                /** @format int32 */
+                numberOfPlayersMax?: number;
+                /** @format date-time */
+                timeFrameStart?: string;
+                /** @format date-time */
+                timeFrameEnd?: string;
+                /** @default false */
+                rankedOnly?: boolean;
                 /**
                  * @format int32
                  * @default 0
