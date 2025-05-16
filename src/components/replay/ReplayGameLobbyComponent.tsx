@@ -123,10 +123,6 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
         return Number.parseInt(player.armyInformation?.["Team"]?.toString() ?? "0") - 1;
     }
 
-    function getPlayerCPU(player: ReplayPlayer) {
-
-    }
-
     return (<Card className={"preview-card"}>
         <Card.Title>
             <span className={"ms-3 pt-2"} style={{fontSize: "20px"}}>Lobby</span>
@@ -150,7 +146,6 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
                                     <td className="py-0">Color</td>
                                     <td className="py-0">Faction</td>
                                     <td className="py-0">Team</td>
-                                    <td className="py-0">CPU</td>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -164,7 +159,6 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
                                         <td className="py-0">{getPlayerColor(player)}</td>
                                         <td className="py-0">{getFactionImage(player)}</td>
                                         <td className="py-0">{getPlayerTeamNumber(player)}</td>
-                                        <td className="py-0">{getPlayerCPU(player)}</td>
                                     </tr>
                                 ))}
                                 </tbody>
