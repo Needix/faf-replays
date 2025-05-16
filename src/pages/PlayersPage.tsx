@@ -1,5 +1,5 @@
 import NavbarComponent from "../components/NavbarComponent.tsx";
-import {Api, Page, Replay, ReplayPlayer} from "../api/Api.ts";
+import {Api, Page, Replay} from "../api/Api.ts";
 import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
 import PaginationComponent from "../components/PaginationComponent.tsx";
 import {useState} from "react";
@@ -10,9 +10,10 @@ const PlayersPage = () => {
     const ApiController = new Api().api;
 
     const [playerNames, setPlayerNames] = useState<string[]>([]);
+    const [playerName, setPlayerName] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [previewData, setPreviewData] = useState<ReplayPlayer | undefined>(undefined);
+    const [previewData, setPreviewData] = useState<Replay[] | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState(""); // For holding user input
 
@@ -41,7 +42,8 @@ const PlayersPage = () => {
         setIsLoading(true);
         ApiController.getReplaysByPlayerName(playerName).then(data => {
             setIsLoading(false);
-            setPreviewData(data.data as Replay);
+            setPlayerName(playerName);
+            setPreviewData(data.data as unknown as Replay[]);
         });
     }
 
@@ -111,6 +113,7 @@ const PlayersPage = () => {
                         <div>
                             <PlayerPreviewComponent
                                 data={previewData}
+                                playerName={playerName}
                             />
                         </div>
                     }
