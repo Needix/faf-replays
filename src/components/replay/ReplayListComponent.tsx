@@ -29,6 +29,9 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
         ApiController.searchReplays({query: searchTerm, page}).then(data => {
             setPageInformation(data.data as Page);
             setIsLoading(false);
+        }).catch(error => {
+            console.error(error);
+            alert("Could not search for replays. Please try again.");
         });
     };
 
@@ -44,7 +47,10 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
                 setIsLoading(false);
                 setPreviewData(data.data as Replay);
             });
-        })
+        }).catch(error => {
+            console.error(error);
+            alert("Could open replay. Please try again.");
+        });
     }
 
     const handleCopyIdClicked = (id: number) => {
@@ -84,10 +90,8 @@ const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
                 URL.revokeObjectURL(fileUrl);
             }).catch((error) => {
                 console.error('Error viewing replay:', error);
-                alert('An error occurred while trying to view the replay. Please try again.');
+                alert('An error occurred while trying to download the replay. Please try again.');
             });
-
-
         });
     }
 
