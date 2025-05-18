@@ -145,8 +145,8 @@ const SearchWithFilters = ({
                                     }
                                 >
                                     <option value="0">Assassination</option>
-                                    <option value="1">Domination</option>
-                                    <option value="2">Demoralization</option>
+                                    <option value="1">Supremacy</option>
+                                    <option value="2">Annihilation</option>
                                     <option value="3">Sandbox</option>
                                     {/* Additional options can be dynamically mapped */}
                                 </Form.Control>
