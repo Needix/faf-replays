@@ -6,6 +6,7 @@ import LOG from "./utils/Logger.ts";
 import appConfig from "./AppConfig.ts";
 import ReplayPage from "./pages/ReplayPage.tsx";
 import PlayersPage from "./pages/PlayersPage.tsx";
+import RequestReplayPage from "./pages/RequestReplayPage.tsx";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
                 <Route path="*" element={<HomePage/>}/>
                 <Route path="/replays" element={<ReplayPage/>}/>
                 <Route path="/players" element={<PlayersPage/>}/>
+                <Route path="/request" element={<RequestReplayPage/>}/>
             </Routes>
         </Router>
     )

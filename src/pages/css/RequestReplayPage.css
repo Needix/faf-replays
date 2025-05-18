@@ -1,0 +1,61 @@
+/* RequestReplayPage.css */
+
+h1 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+p {
+    color: #aaa;
+}
+
+form {
+    background: #323232;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+button {
+    margin-top: 1rem;
+}
+
+/* RequestReplayPage.css */
+
+/* Hide native file input */
+.custom-file-input {
+    position: absolute;
+    opacity: 0; /* Hide completely */
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* Style the custom label (this acts as the button) */
+.custom-file-label {
+    display: inline-block;
+    background-color: #323232;
+    color: #fff;
+    padding: 7px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+
+    /* Optional hover and focus styles */
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+
+.custom-file-label:hover {
+    background-color: #3a3a3a;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.custom-file-label:focus {
+    outline: none;
+    background-color: #444444;
+}
+
+/* Selected file label changes */
+.custom-file-label::after {
+    display: none;
+}
