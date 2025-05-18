@@ -1,0 +1,31 @@
+.scrollable-card {
+    max-height: 80vh; /* Limit the max height of the Card */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal scrolling */
+    padding: 1rem; /* Add some padding inside the Card */
+    border: 1px solid #ddd; /* Add border for clarity */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: A subtle shadow for better visuals */
+    margin-top: 1rem;
+    position: relative; /* Establish a relative positioning context for child elements */
+}
+
+/* Make the ListGroup content grayed out */
+.gray-out {
+    opacity: 0.5;
+    pointer-events: none; /* Disable user interaction */
+}
+
+/* Loading overlay (spinner) fixed to the center of the visible scrollable area */
+.loading-overlay {
+    position: fixed; /* Stick to the center of the current visible scrollable area */
+    top: 50%; /* Center vertically in the viewport */
+    left: 10%; /* Center horizontally in the viewport */
+    transform: translate(-50%, -50%); /* Fine-tune centering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* Prevent blocking user interaction during loading */
+    z-index: 999; /* Ensure the spinner appears above all content */
+}
+
+

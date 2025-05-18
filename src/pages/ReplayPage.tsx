@@ -19,7 +19,6 @@ const ReplayPage = () => {
                     <ReplayListComponent
                         setPreviewData={setPreviewData}
                         setIsLoading={setIsLoading}
-                        isLoading={isLoading}
                     />
                 </Col>
                 <Col>

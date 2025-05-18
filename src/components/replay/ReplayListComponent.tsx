@@ -1,166 +1,132 @@
-import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
-import PaginationComponent from "../PaginationComponent.tsx";
-import {Api, Page, Replay} from "../../api/Api.ts";
-import {useEffect, useState} from "react";
+import {Card, ListGroup} from "react-bootstrap";
+import {Api, Replay} from "../../api/Api.ts";
+import {useEffect, useRef, useState} from "react";
 import SearchWithFilters from "../SearchWithFilters.tsx";
 import {Filters} from "../utils/Filters.tsx";
 
-const ReplayListComponent = ({setPreviewData, setIsLoading, isLoading}: {
+import "./../css/ReplayListComponent.css";
+import LoadingSpinner from "../utils/LoadingSpinner.tsx";
+import StringUtils from "../../utils/StringUtils.ts";
+
+const ReplayListComponent = ({setPreviewData, setIsLoading}: {
     setPreviewData: (data: Replay) => void;
-    setIsLoading: (isLoading: boolean) => void;
-    isLoading: boolean
+    setIsLoading: (isLoading: boolean) => void
 }) => {
     const ApiController = new Api().api;
 
-    const [idsOnPage, setIdsOnPage] = useState<number[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [searchTerm, setSearchTerm] = useState(""); // For holding user input
+    const [replays, setReplays] = useState<Replay[]>([]); // All loaded replays
+    const [listIsLoading, setListIsLoading] = useState(false);
+    const [cursor, setCursor] = useState<number | null>(null); // Server-side cursor for paging
     const [filters, setFilters] = useState<Filters>({
+        searchTerm: "",
         completeStatus: "all",
         mods: [],
         gameTypes: [],
         numberOfPlayers: {min: null, max: null},
         timeFrame: {start: null, end: null},
         rankedOnly: false
-    }); // For holding user input
+    });
+    const [selectedReplayId, setSelectedReplayId] = useState<number | null>(null);
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        performSearch(searchTerm, filters, page - 1);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastReplayElementRef = useRef<HTMLAnchorElement | null>(null);
+
+    // Function to load more replays using the cursor
+    const loadReplays = (applyFilters = false, searchFilters: Filters = filters) => {
+        if (listIsLoading) return;
+        setListIsLoading(true);
+
+        ApiController.searchReplays({
+            query: searchFilters.searchTerm,
+            completeStatus: searchFilters.completeStatus,
+            mods: searchFilters.mods,
+            gameTypes: searchFilters.gameTypes,
+            numberOfPlayersMin: searchFilters.numberOfPlayers.min ?? undefined,
+            numberOfPlayersMax: searchFilters.numberOfPlayers.max ?? undefined,
+            timeFrameStart: searchFilters.timeFrame.start?.toISOString() ?? undefined,
+            timeFrameEnd: searchFilters.timeFrame.end?.toISOString() ?? undefined,
+            rankedOnly: searchFilters.rankedOnly,
+            cursor: applyFilters ? undefined : cursor ?? undefined, // Clear cursor if applying new filters
+        })
+            .then(data => {
+                const newReplays = data.data as unknown as Replay[]
+                setReplays(applyFilters ? newReplays : [...replays, ...newReplays]); // Append or replace
+                setCursor(applyFilters ? 0 : (newReplays.length > 0 ? newReplays[newReplays.length - 1]?.id ?? null : null)); // Update cursor
+                setListIsLoading(false);
+            })
+            .catch(error => {
+                console.error(error);
+                setListIsLoading(false);
+            });
     };
 
-    // Fetch default replays on initial load
+    // Use IntersectionObserver for infinite scrolling
     useEffect(() => {
-        performSearch("", filters);
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) loadReplays();
+        });
+        if (lastReplayElementRef.current) observer.current.observe(lastReplayElementRef.current);
+    }, [lastReplayElementRef.current, cursor]);
+
+    // Initial load
+    useEffect(() => {
+        loadReplays();
     }, []);
 
-    const performSearch = (searchTerm: string, filter: Filters, page: number = 0) => {
-        if (isLoading) return;
-        setIsLoading(true);
-
-        setSearchTerm(searchTerm);
-        setFilters(filter);
-        ApiController.searchReplays({
-            query: searchTerm,
-            completeStatus: filter.completeStatus,
-            mods: filter.mods,
-            gameTypes: filter.gameTypes,
-            numberOfPlayersMin: filter.numberOfPlayers.min ?? undefined,
-            numberOfPlayersMax: filter.numberOfPlayers.max ?? undefined,
-            timeFrameStart: filter.timeFrame.start?.toISOString() ?? undefined,
-            timeFrameEnd: filter.timeFrame.end?.toISOString() ?? undefined,
-            rankedOnly: filter.rankedOnly,
-            page
-        }).then(data => {
-            setPageInformation(data.data as Page);
-            setIsLoading(false);
-        }).catch(error => {
-            console.error(error);
-            alert("Could not search for replays. Please try again.");
-        });
+    const applyFilters = (newFilters: Filters) => {
+        setFilters(newFilters);
+        setCursor(null); // Clear the cursor
+        loadReplays(true, newFilters); // Reload data with new filters
     };
 
-    function setPageInformation(page: Page) {
-        setIdsOnPage(page.content ? page.content.map(id => Number(id)) : []);
-        setTotalPages(page.totalPages ?? 1);
-    }
-
-    const handlePreviewClicked = (id: number) => {
+    const handleReplaySelection = (id: number) => {
+        setSelectedReplayId(id); // Set the selected replay
         setIsLoading(true);
         ApiController.getReplayById(id).then(data => {
             setIsLoading(false);
-            setPreviewData(data.data as Replay);
+            setPreviewData(data.data as Replay); // Show the replay preview
         }).catch(error => {
             console.error(error);
-            alert("Could open replay. Please try again.");
+            alert("Could not open replay. Please try again.");
         });
-    }
-
-    const handleCopyIdClicked = (id: number) => {
-        navigator.clipboard.writeText(id.toString())
-            .then(() => {
-                alert("ID copied to clipboard!");
-            })
-            .catch(() => {
-                alert("Failed to copy ID to clipboard.");
-            });
     };
 
-    function downloadReplay(replayId: number) {
-        ApiController.getReplayFile(replayId).then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to download replay file: ${response.statusText}`);
-            }
-
-            const fileName = `${replayId}.fafreplay`;
-            const mimeType = 'application/octet-stream';
-
-            // Read the response as a Blob
-            response.blob().then((replayBlob) => {
-                // Create a temporary URL for the downloaded file
-                const fileUrl = URL.createObjectURL(replayBlob);
-
-                // Create an invisible anchor element to trigger the download
-                const a = document.createElement('a');
-                a.href = fileUrl;
-                a.download = fileName;
-                a.type = mimeType;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                // Revoke the temporary URL after opening
-                URL.revokeObjectURL(fileUrl);
-            }).catch((error) => {
-                console.error('Error viewing replay:', error);
-                alert('An error occurred while trying to download the replay. Please try again.');
-            });
-        });
-    }
-
     return (
-        <Card className={""}>
-            <Card.Header>
-                <div className="d-flex justify-content-between align-items-center mb-0">
-                    <span style={{color: "#fff"}} className={"ms-2"}>Available Replays</span>
-                </div>
-                <SearchWithFilters performFilteredSearch={performSearch}/>
-            </Card.Header>
-            <Card.Body>
-                <PaginationComponent
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={(page) => handlePageChange(page)}
-                />
-                <Accordion defaultActiveKey="0" flush>
-                    <div style={{maxHeight: "79vh", overflowY: "auto", overflowX: "hidden"}}>
-                        {idsOnPage.map(id => {
-                            return (
-                                <Accordion.Item eventKey={"" + id} key={id}>
-                                    <Accordion.Header>Replay: {id}</Accordion.Header>
-                                    <Accordion.Body>
-                                        <Row>
-                                            <Col>
-                                                <Button className={"btn-sm float-end"}
-                                                        onClick={() => handlePreviewClicked(id)}>
-                                                    Preview</Button>
-                                                <Button className={"btn-sm float-end me-2"}
-                                                        onClick={() => downloadReplay(id)}>
-                                                    Download</Button>
-                                                <Button className={"btn-sm float-start me-2"}
-                                                        onClick={() => handleCopyIdClicked(id)}>
-                                                    Copy ID</Button>
-                                            </Col>
-                                        </Row>
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                            );
-                        })}
+        <>
+            <div className="d-flex justify-content-between align-items-center mb-0">
+                <span style={{color: "#fff"}} className={"ms-2"}>Available Replays</span>
+            </div>
+            <SearchWithFilters performFilteredSearch={applyFilters}/>
+            <Card className={"scrollable-card position-relative"}>
+                {listIsLoading && (
+                    <div className="loading-overlay">
+                        <LoadingSpinner/>
                     </div>
-                </Accordion>
-            </Card.Body>
-        </Card>
+                )}
+
+                <ListGroup variant="flush"
+                           className={listIsLoading ? "gray-out" : ""}
+                >
+                    {replays.map((replay, index) => (
+                        <ListGroup.Item
+                            key={replay.id}
+                            ref={replays.length === index + 1 ? lastReplayElementRef : null} // Attach ref to the last element for infinite scrolling
+                            action
+                            onClick={() => handleReplaySelection(replay?.id ?? 0)} // Handle click to select and preview
+                            className={replay.id === selectedReplayId ? "selected-replay" : ""} // Apply selected style
+                        >
+                            <div className="replay-item">
+                                <div
+                                    className="replay-title">{StringUtils.ellipsis(replay.replayTitle || `Replay ${replay.id}`, 45)}</div>
+                                <div className="replay-details">Players: {replay.numberOfPlayers} | Game
+                                    Type: {replay.gameType}</div>
+                            </div>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+            </Card>
+        </>
     );
 }
 
