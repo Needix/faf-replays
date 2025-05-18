@@ -103,6 +103,7 @@ export interface Replay {
     supComVersion?: string;
     mapName?: string;
     cheatsEnabled?: boolean;
+    ranked?: boolean;
     /** @format int32 */
     randomSeed?: number;
     players?: Record<string, ReplayPlayer>;
@@ -264,10 +265,10 @@ export interface UnitStats {
 }
 
 export interface Page {
-    /** @format int64 */
-    totalElements?: number;
     /** @format int32 */
     totalPages?: number;
+    /** @format int64 */
+    totalElements?: number;
     /** @format int32 */
     size?: number;
     content?: object[];
@@ -288,9 +289,9 @@ export interface PageableObject {
     sort?: SortObject;
     /** @format int32 */
     pageNumber?: number;
-    paged?: boolean;
     /** @format int32 */
     pageSize?: number;
+    paged?: boolean;
     unpaged?: boolean;
 }
 
@@ -596,8 +597,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v1/replays/search
          */
         searchReplays: (
-            query: {
-                query: string;
+            query?: {
+                query?: string;
                 /** @default "all" */
                 completeStatus?: string;
                 mods?: string[];
@@ -612,20 +613,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 timeFrameEnd?: string;
                 /** @default false */
                 rankedOnly?: boolean;
-                /**
-                 * @format int32
-                 * @default 0
-                 */
-                page?: number;
-                /**
-                 * @format int32
-                 * @default 10
-                 */
+                /** @format int64 */
+                cursor?: number;
+                /** @format int32 */
                 size?: number;
             },
             params: RequestParams = {},
         ) =>
-            this.request<Page, void>({
+            this.request<string, void>({
                 path: `/api/v1/replays/search`,
                 method: "GET",
                 query: query,
@@ -678,37 +673,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<string, void>({
                 path: `/api/v1/replays/player/${username}`,
                 method: "GET",
-                format: "json",
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags replay-controller
-         * @name GetAllReplayIds
-         * @summary Retrieve all replay IDs with pagination
-         * @request GET:/api/v1/replays/ids
-         */
-        getAllReplayIds: (
-            query?: {
-                /**
-                 * @format int32
-                 * @default 0
-                 */
-                page?: number;
-                /**
-                 * @format int32
-                 * @default 10
-                 */
-                size?: number;
-            },
-            params: RequestParams = {},
-        ) =>
-            this.request<Page, void>({
-                path: `/api/v1/replays/ids`,
-                method: "GET",
-                query: query,
                 format: "json",
                 ...params,
             }),
