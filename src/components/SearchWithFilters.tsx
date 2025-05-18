@@ -222,7 +222,7 @@ const SearchWithFilters = ({
                             <Col>
                                 <Form.Check
                                     type="checkbox"
-                                    label="Show Ranked Replays Only"
+                                    label="Show Ranked Replays Only (WIP/non functional)"
                                     checked={filters.rankedOnly}
                                     onChange={(e) => updateFilter("rankedOnly", e.target.checked)}
                                 />
