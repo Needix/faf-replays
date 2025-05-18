@@ -12,12 +12,12 @@ class TextFieldVariants {
 const SearchWithFilters = ({
                                performFilteredSearch,
                            }: {
-    performFilteredSearch: (searchTerm: string, filters: Filters) => void;
+    performFilteredSearch: (filters: Filters) => void;
 }) => {
     const [showModal, setShowModal] = useState(false); // Modal visibility
-    const [searchTerm, setSearchTerm] = useState(""); // Text search term
     const debounceTimeout = useRef<number | undefined>(undefined); // UseRef for debounce timeout management
     const [filters, setFilters] = useState({
+        searchTerm: "",
         completeStatus: "all", // all, complete, incomplete
         mods: [] as string[], // List of selected mods
         gameTypes: [] as string[], // List of selected game types
@@ -28,7 +28,7 @@ const SearchWithFilters = ({
 
     function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value;
-        setSearchTerm(value); // Update the search term state
+        updateFilter("searchTerm", value);
 
         // If a previous debounce timeout exists, clear it
         if (debounceTimeout.current) {
@@ -37,14 +37,14 @@ const SearchWithFilters = ({
 
         // Start a new debounce timeout
         debounceTimeout.current = window.setTimeout(() => {
-            performFilteredSearch(searchTerm, {...filters}); // Trigger search
+            performFilteredSearch(filters); // Trigger search
         }, 500); // 500ms debounce period
     }
 
     function handleSearchEnter(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
             // If "Enter" is pressed, immediately trigger the search and clear the debounce
-            performFilteredSearch(searchTerm, {...filters}); // Trigger search
+            performFilteredSearch(filters); // Trigger search
             if (debounceTimeout.current) {
                 clearTimeout(debounceTimeout.current);
             }
@@ -63,7 +63,7 @@ const SearchWithFilters = ({
     // Submit filters and search term
     const applyFilters = () => {
         toggleModal(); // Close modal
-        performFilteredSearch(searchTerm, {...filters}); // Trigger search
+        performFilteredSearch(filters); // Trigger search
     };
 
     return (
@@ -74,7 +74,7 @@ const SearchWithFilters = ({
                     type="text"
                     placeholder="Search..."
                     className="form-control me-2"
-                    value={searchTerm}
+                    value={filters.searchTerm}
                     onChange={handleSearchInput} // On input change, start debounce logic
                     onKeyDown={handleSearchEnter} // On pressing Enter, perform search
                 />

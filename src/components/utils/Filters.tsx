@@ -1,4 +1,5 @@
 export interface Filters {
+    searchTerm: string,
     completeStatus: string;
     mods: string[];
     gameTypes: string[];
