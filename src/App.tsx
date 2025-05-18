@@ -1,5 +1,5 @@
 import './App.css'
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {HashRouter, Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage.tsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LOG from "./utils/Logger.ts";
@@ -16,14 +16,14 @@ function App() {
     LOG.info("App-LogLevel: " + appConfig.logLevel);
 
     return (
-        <Router>
+        <HashRouter>
             <Routes>
                 <Route path="*" element={<HomePage/>}/>
                 <Route path="/replays" element={<ReplayPage/>}/>
                 <Route path="/players" element={<PlayersPage/>}/>
                 <Route path="/request" element={<RequestReplayPage/>}/>
             </Routes>
-        </Router>
+        </HashRouter>
     )
 }
 
