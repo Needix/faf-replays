@@ -287,11 +287,11 @@ export interface PageableObject {
     /** @format int64 */
     offset?: number;
     sort?: SortObject;
+    paged?: boolean;
     /** @format int32 */
     pageNumber?: number;
     /** @format int32 */
     pageSize?: number;
-    paged?: boolean;
     unpaged?: boolean;
 }
 
@@ -769,6 +769,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 method: "GET",
                 query: query,
                 format: "json",
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags map-controller
+         * @name GetMapPreview
+         * @request GET:/api/v1/maps/preview
+         */
+        getMapPreview: (
+            query: {
+                mapName: string;
+            },
+            params: RequestParams = {},
+        ) =>
+            this.request<File, any>({
+                path: `/api/v1/maps/preview`,
+                method: "GET",
+                query: query,
                 ...params,
             }),
     };
