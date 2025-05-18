@@ -2,6 +2,7 @@ import {Card} from "react-bootstrap";
 import StringUtils from "../../utils/StringUtils.ts";
 import {ReplayPreviewComponentProps} from "../types/ReplayPreviewComponentProps.ts";
 import {useState} from "react";
+import {Api} from "../../api/Api.ts";
 
 const ReplayMapPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
@@ -10,7 +11,8 @@ const ReplayMapPreviewComponent = (props: ReplayPreviewComponentProps) => {
 
     const [imageError, setImageError] = useState(false);
     const mapName = completeMapPath.split('/')[2].toLowerCase().replace('.scmap', '');
-    const url = `https://content.faforever.com/maps/previews/large/${mapName}.png`;
+    const url = new Api().baseUrl + `/api/v1/maps/preview?mapName=${encodeURIComponent(mapName)}`;
+
 
     return (<Card className={"preview-card"}>
         <Card.Title>
