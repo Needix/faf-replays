@@ -4,6 +4,8 @@ import {ReplayPreviewComponentProps} from "../types/ReplayPreviewComponentProps.
 import {useState} from "react";
 import {Api} from "../../api/Api.ts";
 
+import './../css/ReplayMapPreviewComponent.css';
+
 const ReplayMapPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
 
@@ -14,7 +16,7 @@ const ReplayMapPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const url = new Api().baseUrl + `/api/v1/maps/preview?mapName=${encodeURIComponent(mapName)}`;
 
 
-    return (<Card className={"preview-card"}>
+    return (<Card className={"preview-card map-preview-component"}>
         <Card.Title>
                                 <span className={"ms-3 pt-2"}
                                       style={{fontSize: "20px"}}
