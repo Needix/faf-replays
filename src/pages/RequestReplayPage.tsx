@@ -60,7 +60,7 @@ const RequestReplayPage = () => {
     };
 
     return (
-        <div className="body">
+        <div className="body requestReplay">
             <NavbarComponent/>
             <Container className="mt-4">
                 <h1>Analyze a Replay</h1>
