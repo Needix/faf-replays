@@ -5,6 +5,7 @@ import ReplayPreviewComponent from "../components/replay/ReplayPreviewComponent.
 import ReplayListComponent from "../components/replay/ReplayListComponent.tsx";
 import {useState} from "react";
 import {Replay} from "../api/Api.ts";
+import LoadingSpinner from "../components/utils/LoadingSpinner.tsx";
 
 const ReplayPage = () => {
     const [previewData, setPreviewData] = useState<Replay | undefined>(undefined);
@@ -23,11 +24,7 @@ const ReplayPage = () => {
                 </Col>
                 <Col>
                     {isLoading &&
-                        <div className="d-flex justify-content-center align-items-center" style={{height: "100%"}}>
-                            <div className="spinner-border spinner-color" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
+                        <LoadingSpinner/>
                     }
                     {!isLoading && previewData &&
                         <div>
