@@ -11,6 +11,8 @@ const ReplayPage = () => {
     const [previewData, setPreviewData] = useState<Replay | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [selectedOption, setSelectedOption] = useState("Game Details");
+
     return (
         <div className={"body"}>
             <NavbarComponent/>
@@ -29,6 +31,8 @@ const ReplayPage = () => {
                         <div>
                             <ReplayPreviewComponent
                                 data={previewData}
+                                selectedOption={selectedOption}
+                                setSelectedOption={setSelectedOption}
                             />
                         </div>
                     }

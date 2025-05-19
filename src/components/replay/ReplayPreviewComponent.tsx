@@ -4,19 +4,19 @@ import {Button, Col, Row} from "react-bootstrap";
 import "../css/ReplayPreviewComponent.css";
 import ReplayGameDetailsComponent from "./ReplayGameDetailsComponent.tsx";
 import ReplayGameLobbyComponent from "./ReplayGameLobbyComponent.tsx";
-import {useState} from "react";
 import ReplaySummaryGraphs from "./ReplaySummaryGraphs.tsx";
 
 const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
 
-    const [selectedOption, setSelectedOption] = useState("Game Details");
-
     // Map of menu options to components
     const componentsMap: Record<string, React.ReactNode> = {
-        "Game Details": <ReplayGameDetailsComponent data={data}/>,
-        "Lobby": <ReplayGameLobbyComponent data={data}/>,
-        "Analysis": <ReplaySummaryGraphs data={data}/>
+        "Game Details": <ReplayGameDetailsComponent data={data} selectedOption={props.selectedOption}
+                                                    setSelectedOption={props.setSelectedOption}/>,
+        "Lobby": <ReplayGameLobbyComponent data={data} selectedOption={props.selectedOption}
+                                           setSelectedOption={props.setSelectedOption}/>,
+        "Analysis": <ReplaySummaryGraphs data={data} selectedOption={props.selectedOption}
+                                         setSelectedOption={props.setSelectedOption}/>
     };
 
     // Menu options
@@ -35,12 +35,12 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
                         <Button
                             key={option}
                             variant={
-                                selectedOption === option
+                                props.selectedOption === option
                                     ? colorClasses[index % colorClasses.length]
                                     : `outline-${colorClasses[index % colorClasses.length]}`
                             }
                             className="menu-button nav-item small-tabs w-100"
-                            onClick={() => setSelectedOption(option)}
+                            onClick={() => props.setSelectedOption(option)}
                         >
                             {option}
                         </Button>
@@ -51,7 +51,7 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
             {/* Dynamic Content */}
             <Col md={10}>
                 {/*<div>*/}
-                {componentsMap[selectedOption]}
+                {componentsMap[props.selectedOption]}
                 {/*</div>*/}
             </Col>
         </Row>
