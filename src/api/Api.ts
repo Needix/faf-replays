@@ -30,6 +30,30 @@ export interface BuiltStats {
     energy?: number;
 }
 
+export interface FactionStats {
+    /** @format int32 */
+    id?: number;
+    faction?: "NONE" | "UEF" | "AEON" | "CYBRAN" | "SERAPHIM" | "NOMADS";
+    /** @format int32 */
+    totalReplays?: number;
+    /** @format int32 */
+    totalWins?: number;
+    unitStats?: UnitStats;
+    resourceStats?: ResourceStats;
+    defeatedStats?: number[];
+    playedGameTypeCount?: Record<string, number>;
+    wonGameTypeCount?: Record<string, number>;
+    playedColorCount?: Record<string, number>;
+    /** @format double */
+    totalMassShared?: number;
+    /** @format double */
+    totalEnergyShared?: number;
+    /** @format double */
+    totalMassReceived?: number;
+    /** @format double */
+    totalEnergyReceived?: number;
+}
+
 export interface GeneralStats {
     /** @format int32 */
     score?: number;
@@ -82,11 +106,48 @@ export interface OutStats {
     excess?: number;
 }
 
+export interface Player {
+    ownerId?: string;
+    name?: string;
+    /** @uniqueItems true */
+    replayPlayers?: ReplayPlayer[];
+    /** @uniqueItems true */
+    replayPlayerSummaries?: ReplayPlayerSummary[];
+    playerSummary?: PlayerSummary;
+}
+
+export interface PlayerRating {
+    /** @format int32 */
+    id?: number;
+    /** @format date-time */
+    date?: string;
+    /** @format int32 */
+    gamePlayed?: number;
+    /** @format int32 */
+    rating?: number;
+    /** @format int32 */
+    mean?: number;
+    /** @format double */
+    ratingAdjustment?: number;
+}
+
+export interface PlayerSummary {
+    ownerId?: string;
+    name?: string;
+    factionStats?: Record<string, FactionStats>;
+    playerNameHistory?: Record<string, string>;
+    gamesPlayedHistory?: string[];
+    ratingHistory?: PlayerRating[];
+    /** @format int64 */
+    totalReplays?: number;
+}
+
 export interface Replay {
     /** @format int64 */
     id?: number;
     /** @format date-time */
     importDate?: string;
+    newReplay?: boolean;
     replayTitle?: string;
     /** @format int32 */
     replayVersion?: number;
@@ -106,8 +167,9 @@ export interface Replay {
     ranked?: boolean;
     /** @format int32 */
     randomSeed?: number;
-    players?: Record<string, ReplayPlayer>;
+    players?: ReplayPlayer[];
     chatMessages?: ReplayChatMessage[];
+    /** @uniqueItems true */
     playerScores?: ReplayPlayerSummary[];
     scenarioInformation?: Record<string, object>;
     gameType?: string;
@@ -125,11 +187,13 @@ export interface ReplayChatMessage {
 }
 
 export interface ReplayPlayer {
-    /** @format int64 */
-    id?: number;
+    id?: string;
     name?: string;
     /** @format int32 */
-    playerId?: number;
+    playerIdInReplay?: number;
+    victory?: boolean;
+    replay?: Replay;
+    player?: Player;
     /** @format double */
     massShared?: number;
     /** @format double */
@@ -153,12 +217,12 @@ export interface ReplayPlayerApm {
 }
 
 export interface ReplayPlayerSummary {
-    /** @format int64 */
-    id?: number;
+    id?: string;
     type?: string;
     name?: string;
-    /** @format int32 */
-    faction?: number;
+    faction?: "NONE" | "UEF" | "AEON" | "CYBRAN" | "SERAPHIM" | "NOMADS";
+    replay?: Replay;
+    player?: Player;
     general?: GeneralStats;
     blueprints?: Record<string, BlueprintStats>;
     resources?: ResourceStats;
@@ -265,34 +329,34 @@ export interface UnitStats {
 }
 
 export interface Page {
-    /** @format int32 */
-    totalPages?: number;
     /** @format int64 */
     totalElements?: number;
+    /** @format int32 */
+    totalPages?: number;
     /** @format int32 */
     size?: number;
     content?: object[];
     /** @format int32 */
     number?: number;
-    sort?: SortObject;
-    first?: boolean;
-    last?: boolean;
+    pageable?: PageableObject;
     /** @format int32 */
     numberOfElements?: number;
-    pageable?: PageableObject;
+    first?: boolean;
+    last?: boolean;
+    sort?: SortObject;
     empty?: boolean;
 }
 
 export interface PageableObject {
     /** @format int64 */
     offset?: number;
-    sort?: SortObject;
-    paged?: boolean;
     /** @format int32 */
     pageNumber?: number;
     /** @format int32 */
     pageSize?: number;
+    paged?: boolean;
     unpaged?: boolean;
+    sort?: SortObject;
 }
 
 export interface SortObject {
@@ -351,12 +415,62 @@ export class HttpClient<SecurityDataType = unknown> {
     private securityData: SecurityDataType | null = null;
     private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
     private abortControllers = new Map<CancelToken, AbortController>();
+
+    constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
+        Object.assign(this, apiConfig);
+    }
+
     private baseApiParams: RequestParams = {
         credentials: "same-origin",
         headers: {},
         redirect: "follow",
         referrerPolicy: "no-referrer",
     };
+
+    public setSecurityData = (data: SecurityDataType | null) => {
+        this.securityData = data;
+    };
+
+    protected encodeQueryParam(key: string, value: any) {
+        const encodedKey = encodeURIComponent(key);
+        return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
+    }
+
+    protected addQueryParam(query: QueryParamsType, key: string) {
+        return this.encodeQueryParam(key, query[key]);
+    }
+
+    protected addArrayQueryParam(query: QueryParamsType, key: string) {
+        const value = query[key];
+        return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
+    }
+
+    protected toQueryString(rawQuery?: QueryParamsType): string {
+        const query = rawQuery || {};
+        const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
+        return keys
+            .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
+            .join("&");
+    }
+
+    protected addQueryParams(rawQuery?: QueryParamsType): string {
+        const queryString = this.toQueryString(rawQuery);
+        return queryString ? `?${queryString}` : "";
+    }
+
+    protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
+        return {
+            ...this.baseApiParams,
+            ...params1,
+            ...(params2 || {}),
+            headers: {
+                ...(this.baseApiParams.headers || {}),
+                ...(params1.headers || {}),
+                ...((params2 && params2.headers) || {}),
+            },
+        };
+    }
+
     private contentFormatters: Record<ContentType, (input: any) => any> = {
         [ContentType.Json]: (input: any) =>
             input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
@@ -377,13 +491,21 @@ export class HttpClient<SecurityDataType = unknown> {
         [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
     };
 
-    constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
-        Object.assign(this, apiConfig);
-    }
+    protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
+        if (this.abortControllers.has(cancelToken)) {
+            const abortController = this.abortControllers.get(cancelToken);
+            if (abortController) {
+                return abortController.signal;
+            }
+            return void 0;
+        }
 
-    public setSecurityData = (data: SecurityDataType | null) => {
-        this.securityData = data;
+        const abortController = new AbortController();
+        this.abortControllers.set(cancelToken, abortController);
+        return abortController.signal;
     };
+
+    private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
 
     public abortRequest = (cancelToken: CancelToken) => {
         const abortController = this.abortControllers.get(cancelToken);
@@ -452,62 +574,6 @@ export class HttpClient<SecurityDataType = unknown> {
             return data;
         });
     };
-
-    protected encodeQueryParam(key: string, value: any) {
-        const encodedKey = encodeURIComponent(key);
-        return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
-    }
-
-    protected addQueryParam(query: QueryParamsType, key: string) {
-        return this.encodeQueryParam(key, query[key]);
-    }
-
-    protected addArrayQueryParam(query: QueryParamsType, key: string) {
-        const value = query[key];
-        return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
-    }
-
-    protected toQueryString(rawQuery?: QueryParamsType): string {
-        const query = rawQuery || {};
-        const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
-        return keys
-            .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
-            .join("&");
-    }
-
-    protected addQueryParams(rawQuery?: QueryParamsType): string {
-        const queryString = this.toQueryString(rawQuery);
-        return queryString ? `?${queryString}` : "";
-    }
-
-    protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
-        return {
-            ...this.baseApiParams,
-            ...params1,
-            ...(params2 || {}),
-            headers: {
-                ...(this.baseApiParams.headers || {}),
-                ...(params1.headers || {}),
-                ...((params2 && params2.headers) || {}),
-            },
-        };
-    }
-
-    protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
-        if (this.abortControllers.has(cancelToken)) {
-            const abortController = this.abortControllers.get(cancelToken);
-            if (abortController) {
-                return abortController.signal;
-            }
-            return void 0;
-        }
-
-        const abortController = new AbortController();
-        this.abortControllers.set(cancelToken, abortController);
-        return abortController.signal;
-    };
-
-    private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
 }
 
 /**
@@ -541,6 +607,36 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 body: data,
                 type: ContentType.FormData,
                 format: "json",
+                ...params,
+            }),
+
+        /**
+         * @description This endpoint retrieves all replay IDs from the database and triggers an asynchronous reanalysis of all replays using multiple threads.
+         *
+         * @tags replay-controller
+         * @name ReanalyzeAllReplays
+         * @summary Reanalyzes all replays in the database
+         * @request POST:/api/v1/replays/reanalyze-all
+         */
+        reanalyzeAllReplays: (params: RequestParams = {}) =>
+            this.request<object, object>({
+                path: `/api/v1/replays/reanalyze-all`,
+                method: "POST",
+                ...params,
+            }),
+
+        /**
+         * @description This endpoint reanalyzes all saved replay files and triggers an asynchronous reanalysis of all replays using multiple threads.
+         *
+         * @tags replay-controller
+         * @name ReanalyzeAllReplayFiles
+         * @summary Reanalyzes all replays saved as files
+         * @request POST:/api/v1/replays/reanalyze-all-files
+         */
+        reanalyzeAllReplayFiles: (params: RequestParams = {}) =>
+            this.request<object, object>({
+                path: `/api/v1/replays/reanalyze-all-files`,
+                method: "POST",
                 ...params,
             }),
 
@@ -698,11 +794,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags player-controller
          * @name GetPlayerStatsSummary
          * @summary A summary of the stats a given playername
-         * @request GET:/api/v1/players/{playerName}/summary
+         * @request GET:/api/v1/players/{playerName}
          */
         getPlayerStatsSummary: (playerName: string, params: RequestParams = {}) =>
-            this.request<number, void>({
-                path: `/api/v1/players/${playerName}/summary`,
+            this.request<Player, void>({
+                path: `/api/v1/players/${playerName}`,
                 method: "GET",
                 format: "json",
                 ...params,
@@ -712,60 +808,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags player-controller
-         * @name SearchPlayerNames
+         * @name SearchReplays1
          * @summary Search players available in replays by playername
          * @request GET:/api/v1/players/search
          */
-        searchPlayerNames: (
+        searchReplays1: (
             query?: {
-                /** @default "" */
-                searchTerm?: string;
-                /**
-                 * @format int32
-                 * @default 0
-                 */
-                page?: number;
-                /**
-                 * @format int32
-                 * @default 10
-                 */
+                query?: string;
+                /** @format int64 */
+                cursor?: number;
+                /** @format int32 */
                 size?: number;
             },
             params: RequestParams = {},
         ) =>
             this.request<Page, void>({
                 path: `/api/v1/players/search`,
-                method: "GET",
-                query: query,
-                format: "json",
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags player-controller
-         * @name GetPlayerNames
-         * @summary Lists all players available in replays
-         * @request GET:/api/v1/players/list
-         */
-        getPlayerNames: (
-            query?: {
-                /**
-                 * @format int32
-                 * @default 0
-                 */
-                page?: number;
-                /**
-                 * @format int32
-                 * @default 10
-                 */
-                size?: number;
-            },
-            params: RequestParams = {},
-        ) =>
-            this.request<Page, void>({
-                path: `/api/v1/players/list`,
                 method: "GET",
                 query: query,
                 format: "json",
