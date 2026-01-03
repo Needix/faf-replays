@@ -40,7 +40,7 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
                                     : `outline-${colorClasses[index % colorClasses.length]}`
                             }
                             className="menu-button nav-item small-tabs w-100"
-                            onClick={() => props.setSelectedOption(option)}
+                            onClick={() => props.setSelectedOption?.(option)}
                         >
                             {option}
                         </Button>
@@ -51,7 +51,7 @@ const ReplayPreviewComponent = (props: ReplayPreviewComponentProps) => {
             {/* Dynamic Content */}
             <Col md={10}>
                 {/*<div>*/}
-                {componentsMap[props.selectedOption]}
+                {componentsMap[props?.selectedOption ?? "Game Details"]}
                 {/*</div>*/}
             </Col>
         </Row>
