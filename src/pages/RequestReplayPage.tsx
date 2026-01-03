@@ -12,6 +12,8 @@ const RequestReplayPage = () => {
     const [isLoading, setIsLoading] = useState(false); // Loading state
     const [error, setError] = useState<string | null>(null); // Error message if any
     const [analysisResult, setAnalysisResult] = useState<Replay | null>(null); // Result after analysis
+    
+    const [selectedOption, setSelectedOption] = useState("Game Details");
 
     // Handle user input for replay ID
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +76,7 @@ const RequestReplayPage = () => {
                     <Row className="mb-3" style={{paddingBottom: "1rem"}}>
                         <Col md={6}>
                             <Form.Group controlId="replayIdInput">
-                                <Form.Label>Replay ID</Form.Label>
+                                <Form.Label column sm={2}>Replay ID</Form.Label>
                                 <Form.Control
                                     type="text"
                                     placeholder="Enter Replay ID"
@@ -86,7 +88,7 @@ const RequestReplayPage = () => {
                         </Col>
                         <Col md={6}>
                             <Form.Group controlId="fileUpload" className="file-upload-group">
-                                <Form.Label>Replay File</Form.Label>
+                                <Form.Label column sm={2}>Replay File</Form.Label>
                                 <div className="custom-file-upload-wrapper">
                                     <input
                                         type="file"
@@ -121,7 +123,11 @@ const RequestReplayPage = () => {
                 {analysisResult && (
                     <div className="mt-4">
                         <h2>Analysis Results</h2>
-                        <ReplayPreviewComponent data={analysisResult}/> {/* Re-use existing component */}
+                        <ReplayPreviewComponent
+                            data={analysisResult}
+                            selectedOption={selectedOption}
+                            setSelectedOption={setSelectedOption}
+                        /> {/* Re-use existing component */}
                     </div>
                 )}
             </Container>
