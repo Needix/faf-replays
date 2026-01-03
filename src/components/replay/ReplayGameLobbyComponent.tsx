@@ -18,7 +18,7 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
         "#ff901427", // (02) dark red
         "#FFFF873E", // (03) Nomads orange
         "#ffb76518", // (04) new brown
-        "#ffa79602", // (05) Sera golden
+        "#ffa796A2", // (05) Sera golden
         "#fffafa00", // (06) new yellow
         "#ff9fd802", // (07) Order Green
         "#ff40bf40", // (08) mid green
