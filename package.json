@@ -17,13 +17,12 @@
     "bootstrap": "^5.3.3",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.2",
-    "prod": "^1.0.1",
-    "async": "^3.2.6",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.6.0",
+    "run": "^1.5.0",
     "swagger-typescript-api": "^13.0.23"
   },
   "devDependencies": {
