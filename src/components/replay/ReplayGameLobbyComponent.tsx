@@ -36,7 +36,7 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
     ];
 
     function getPlayerPosition(player: ReplayPlayer) {
-        return <div style={{textAlign: "center"}}>{player.playerId}</div>
+        return <div style={{textAlign: "center"}}>{player.playerIdInReplay}</div>
     }
 
     function getPlayerName(player: ReplayPlayer) {
