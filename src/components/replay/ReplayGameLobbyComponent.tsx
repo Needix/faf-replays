@@ -116,7 +116,7 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
         return <div style={{backgroundColor: color}}
                     role="presentation"
                     aria-label="Player color block"
-        >#</div>;
+        >&nbsp;</div>;
     }
 
     function getPlayerTeamNumber(player: ReplayPlayer) {
