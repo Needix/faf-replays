@@ -11,7 +11,7 @@ import {ReplayPlayer} from "../../api/Api.ts";
 
 const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
     const data = props.data;
-    const playerRecords = data?.players ?? {};
+    const players = data?.players ?? [];
 
     const gameColors = [
         "#FFe80a0a", // (01) Cybran red
@@ -34,10 +34,6 @@ const ReplayGameLobbyComponent = (props: ReplayPreviewComponentProps) => {
         "#ffff88ff", // (18) pink
         "#ffff32ff", // (19) new fuschia
     ];
-
-    const players = Object.entries(playerRecords).map(([, value]) => {
-        return value
-    });
 
     function getPlayerPosition(player: ReplayPlayer) {
         return <div style={{textAlign: "center"}}>{player.playerId}</div>
