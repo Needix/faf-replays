@@ -30,30 +30,6 @@ export interface BuiltStats {
     energy?: number;
 }
 
-export interface FactionStats {
-    /** @format int32 */
-    id?: number;
-    faction?: "NONE" | "UEF" | "AEON" | "CYBRAN" | "SERAPHIM" | "NOMADS";
-    /** @format int32 */
-    totalReplays?: number;
-    /** @format int32 */
-    totalWins?: number;
-    unitStats?: UnitStats;
-    resourceStats?: ResourceStats;
-    defeatedStats?: number[];
-    playedGameTypeCount?: Record<string, number>;
-    wonGameTypeCount?: Record<string, number>;
-    playedColorCount?: Record<string, number>;
-    /** @format double */
-    totalMassShared?: number;
-    /** @format double */
-    totalEnergyShared?: number;
-    /** @format double */
-    totalMassReceived?: number;
-    /** @format double */
-    totalEnergyReceived?: number;
-}
-
 export interface GeneralStats {
     /** @format int32 */
     score?: number;
@@ -106,42 +82,6 @@ export interface OutStats {
     excess?: number;
 }
 
-export interface Player {
-    ownerId?: string;
-    name?: string;
-    /** @uniqueItems true */
-    replayPlayers?: ReplayPlayer[];
-    /** @uniqueItems true */
-    replayPlayerSummaries?: ReplayPlayerSummary[];
-    playerSummary?: PlayerSummary;
-}
-
-export interface PlayerRating {
-    /** @format int32 */
-    id?: number;
-    /** @format date-time */
-    date?: string;
-    /** @format int32 */
-    gamePlayed?: number;
-    /** @format int32 */
-    rating?: number;
-    /** @format int32 */
-    mean?: number;
-    /** @format double */
-    ratingAdjustment?: number;
-}
-
-export interface PlayerSummary {
-    ownerId?: string;
-    name?: string;
-    factionStats?: Record<string, FactionStats>;
-    playerNameHistory?: Record<string, string>;
-    gamesPlayedHistory?: string[];
-    ratingHistory?: PlayerRating[];
-    /** @format int64 */
-    totalReplays?: number;
-}
-
 export interface Replay {
     /** @format int64 */
     id?: number;
@@ -192,8 +132,6 @@ export interface ReplayPlayer {
     /** @format int32 */
     playerIdInReplay?: number;
     victory?: boolean;
-    replay?: Replay;
-    player?: Player;
     /** @format double */
     massShared?: number;
     /** @format double */
@@ -221,8 +159,6 @@ export interface ReplayPlayerSummary {
     type?: string;
     name?: string;
     faction?: "NONE" | "UEF" | "AEON" | "CYBRAN" | "SERAPHIM" | "NOMADS";
-    replay?: Replay;
-    player?: Player;
     general?: GeneralStats;
     blueprints?: Record<string, BlueprintStats>;
     resources?: ResourceStats;
@@ -328,11 +264,67 @@ export interface UnitStats {
     cdr?: UnitDetail;
 }
 
-export interface Page {
+export interface FactionStats {
+    /** @format int32 */
+    id?: number;
+    faction?: "NONE" | "UEF" | "AEON" | "CYBRAN" | "SERAPHIM" | "NOMADS";
+    /** @format int32 */
+    totalReplays?: number;
+    /** @format int32 */
+    totalWins?: number;
+    unitStats?: UnitStats;
+    resourceStats?: ResourceStats;
+    defeatedStats?: number[];
+    playedGameTypeCount?: Record<string, number>;
+    wonGameTypeCount?: Record<string, number>;
+    playedColorCount?: Record<string, number>;
+    /** @format double */
+    totalMassShared?: number;
+    /** @format double */
+    totalEnergyShared?: number;
+    /** @format double */
+    totalMassReceived?: number;
+    /** @format double */
+    totalEnergyReceived?: number;
+}
+
+export interface Player {
+    ownerId?: string;
+    name?: string;
+    playerSummary?: PlayerSummary;
+}
+
+export interface PlayerRating {
+    /** @format int32 */
+    id?: number;
+    /** @format date-time */
+    date?: string;
+    /** @format int32 */
+    gamePlayed?: number;
+    /** @format int32 */
+    rating?: number;
+    /** @format int32 */
+    mean?: number;
+    /** @format double */
+    ratingAdjustment?: number;
+}
+
+export interface PlayerSummary {
+    ownerId?: string;
+    name?: string;
+    factionStats?: Record<string, FactionStats>;
+    playerNameHistory?: Record<string, string>;
+    gamesPlayedHistory?: string[];
+    ratingHistory?: PlayerRating[];
     /** @format int64 */
-    totalElements?: number;
+    totalReplays?: number;
+}
+
+export interface Page {
     /** @format int32 */
     totalPages?: number;
+    /** @format int64 */
+    totalElements?: number;
     /** @format int32 */
     size?: number;
     content?: object[];
@@ -427,6 +419,19 @@ export class HttpClient<SecurityDataType = unknown> {
         referrerPolicy: "no-referrer",
     };
 
+    protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
+        return {
+            ...this.baseApiParams,
+            ...params1,
+            ...(params2 || {}),
+            headers: {
+                ...(this.baseApiParams.headers || {}),
+                ...(params1.headers || {}),
+                ...((params2 && params2.headers) || {}),
+            },
+        };
+    }
+
     public setSecurityData = (data: SecurityDataType | null) => {
         this.securityData = data;
     };
@@ -458,19 +463,6 @@ export class HttpClient<SecurityDataType = unknown> {
         return queryString ? `?${queryString}` : "";
     }
 
-    protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
-        return {
-            ...this.baseApiParams,
-            ...params1,
-            ...(params2 || {}),
-            headers: {
-                ...(this.baseApiParams.headers || {}),
-                ...(params1.headers || {}),
-                ...((params2 && params2.headers) || {}),
-            },
-        };
-    }
-
     private contentFormatters: Record<ContentType, (input: any) => any> = {
         [ContentType.Json]: (input: any) =>
             input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
@@ -491,6 +483,8 @@ export class HttpClient<SecurityDataType = unknown> {
         [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
     };
 
+    private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
+
     protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
         if (this.abortControllers.has(cancelToken)) {
             const abortController = this.abortControllers.get(cancelToken);
@@ -504,8 +498,6 @@ export class HttpClient<SecurityDataType = unknown> {
         this.abortControllers.set(cancelToken, abortController);
         return abortController.signal;
     };
-
-    private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
 
     public abortRequest = (cancelToken: CancelToken) => {
         const abortController = this.abortControllers.get(cancelToken);
@@ -808,11 +800,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags player-controller
-         * @name SearchReplays1
+         * @name SearchPlayers
          * @summary Search players available in replays by playername
          * @request GET:/api/v1/players/search
          */
-        searchReplays1: (
+        searchPlayers: (
             query?: {
                 query?: string;
                 /** @format int64 */
