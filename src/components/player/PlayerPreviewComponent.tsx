@@ -8,6 +8,7 @@ const PlayerPreviewComponent = (props: PlayerPreviewComponentProps) => {
     const ratingHistorySorted = summary?.ratingHistory
         ? [...summary.ratingHistory].sort((a, b) => new Date(b.date || "").getTime() - new Date(a.date || "").getTime())
         : [];
+    const formatNumber = (value?: number) => (value ?? 0).toLocaleString();
 
     return (
         <Card>
@@ -83,11 +84,35 @@ const PlayerPreviewComponent = (props: PlayerPreviewComponentProps) => {
                                             <tbody>
                                             <tr>
                                                 <td>Mass Shared</td>
-                                                <td>{stats.totalMassShared?.toLocaleString()}</td>
+                                                <td>{formatNumber(stats.totalMassShared)}</td>
                                             </tr>
                                             <tr>
                                                 <td>Energy Shared</td>
-                                                <td>{stats.totalEnergyShared?.toLocaleString()}</td>
+                                                <td>{formatNumber(stats.totalEnergyShared)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mass Received</td>
+                                                <td>{formatNumber(stats.totalMassReceived)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Energy Received</td>
+                                                <td>{formatNumber(stats.totalEnergyReceived)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Mass In</td>
+                                                <td>{formatNumber(stats.resourceStats?.massIn?.total)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Mass Out</td>
+                                                <td>{formatNumber(stats.resourceStats?.massOut?.total)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Energy In</td>
+                                                <td>{formatNumber(stats.resourceStats?.energyIn?.total)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Energy Out</td>
+                                                <td>{formatNumber(stats.resourceStats?.energyOut?.total)}</td>
                                             </tr>
                                             </tbody>
                                         </Table>
@@ -114,6 +139,68 @@ const PlayerPreviewComponent = (props: PlayerPreviewComponentProps) => {
                                                         <td>{details.lost || 0}</td>
                                                     </tr>
                                                 ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                    <div className="col-md-6 mt-3">
+                                        <h6>Game Types</h6>
+                                        <Table size="sm" className="text-small">
+                                            <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Played</th>
+                                                <th>Won</th>
+                                                <th>Win %</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {stats.playedGameTypeCount
+                                                ? Object.entries(stats.playedGameTypeCount)
+                                                    .sort((a, b) => b[1] - a[1])
+                                                    .map(([type, played]) => {
+                                                        const won = stats.wonGameTypeCount?.[type] ?? 0;
+                                                        const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
+                                                        return (
+                                                            <tr key={type}>
+                                                                <td>{type}</td>
+                                                                <td>{played}</td>
+                                                                <td>{won}</td>
+                                                                <td>{winRate}%</td>
+                                                            </tr>
+                                                        );
+                                                    })
+                                                : (
+                                                    <tr>
+                                                        <td colSpan={4}>No data</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                    <div className="col-md-6 mt-3">
+                                        <h6>Colors</h6>
+                                        <Table size="sm" className="text-small">
+                                            <thead>
+                                            <tr>
+                                                <th>Color</th>
+                                                <th>Played</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {stats.playedColorCount
+                                                ? Object.entries(stats.playedColorCount)
+                                                    .sort((a, b) => b[1] - a[1])
+                                                    .map(([color, count]) => (
+                                                        <tr key={color}>
+                                                            <td>{color}</td>
+                                                            <td>{count}</td>
+                                                        </tr>
+                                                    ))
+                                                : (
+                                                    <tr>
+                                                        <td colSpan={2}>No data</td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </Table>
                                     </div>
