@@ -3,7 +3,7 @@ import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {DatePicker} from "@mui/lab"; // Install Material UI for date pickers
 import TextField from "@mui/material/TextField";
 import {FaCog} from "react-icons/fa";
-import {Filters} from "./utils/Filters.tsx"; // Import the gear icon from react-icons
+import {Filters} from "../utils/Filters.tsx"; // Import the gear icon from react-icons
 
 
 class TextFieldVariants {
@@ -144,10 +144,11 @@ const SearchWithFilters = ({
                                         )
                                     }
                                 >
-                                    <option value="0">Assassination</option>
-                                    <option value="1">Supremacy</option>
-                                    <option value="2">Annihilation</option>
-                                    <option value="3">Sandbox</option>
+                                    <option value="DECAPITATION">Decapitation</option>
+                                    <option value="DOMINATION">Domination</option>
+                                    <option value="DEMORALIZATION">Demoralization</option>
+                                    <option value="ERADICATION">Eradication</option>
+                                    <option value="SANDBOX">Sandbox</option>
                                     {/* Additional options can be dynamically mapped */}
                                 </Form.Control>
                             </Col>

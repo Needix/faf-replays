@@ -1,7 +1,7 @@
 import {Card, ListGroup} from "react-bootstrap";
 import {Api, Player} from "../../api/Api.ts";
 import {useEffect, useRef, useState} from "react";
-import SearchWithFilters from "../SearchWithFilters.tsx";
+import SearchWithFilters from "../player/SearchWithFilters.tsx";
 
 // import "./../../css/ReplayListComponent.css";
 import LoadingSpinner from "../utils/LoadingSpinner.tsx";

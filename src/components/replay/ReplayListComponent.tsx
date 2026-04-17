@@ -1,7 +1,7 @@
 import {Card, ListGroup} from "react-bootstrap";
 import {Api, Replay} from "../../api/Api.ts";
 import {useEffect, useRef, useState} from "react";
-import SearchWithFilters from "../SearchWithFilters.tsx";
+import SearchWithFilters from "./SearchWithFilters.tsx";
 import {Filters} from "../utils/Filters.tsx";
 
 import "./../css/ReplayListComponent.css";
