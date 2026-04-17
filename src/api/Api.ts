@@ -109,8 +109,6 @@ export interface Replay {
     randomSeed?: number;
     players?: ReplayPlayer[];
     chatMessages?: ReplayChatMessage[];
-    /** @uniqueItems true */
-    playerScores?: ReplayPlayerSummary[];
     scenarioInformation?: Record<string, object>;
     gameType?: string;
 }
@@ -132,6 +130,7 @@ export interface ReplayPlayer {
     /** @format int32 */
     playerIdInReplay?: number;
     victory?: boolean;
+    replayPlayerSummary?: ReplayPlayerSummary;
     /** @format double */
     massShared?: number;
     /** @format double */
@@ -745,22 +744,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 path: `/api/v1/replays/range`,
                 method: "GET",
                 query: query,
-                format: "json",
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags replay-controller
-         * @name GetReplaysByPlayerName
-         * @summary Returns all replays of a specific player
-         * @request GET:/api/v1/replays/player/{username}
-         */
-        getReplaysByPlayerName: (username: string, params: RequestParams = {}) =>
-            this.request<string, void>({
-                path: `/api/v1/replays/player/${username}`,
-                method: "GET",
                 format: "json",
                 ...params,
             }),

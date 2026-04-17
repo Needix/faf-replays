@@ -100,19 +100,19 @@ const PlayerPreviewComponent = (props: PlayerPreviewComponentProps) => {
                                             </tr>
                                             <tr>
                                                 <td>Total Mass In</td>
-                                                <td>{formatNumber(stats.resourceStats?.massIn?.total)}</td>
+                                                <td>{formatNumber(stats.resourceStats?.massin?.total)}</td>
                                             </tr>
                                             <tr>
                                                 <td>Total Mass Out</td>
-                                                <td>{formatNumber(stats.resourceStats?.massOut?.total)}</td>
+                                                <td>{formatNumber(stats.resourceStats?.massout?.total)}</td>
                                             </tr>
                                             <tr>
                                                 <td>Total Energy In</td>
-                                                <td>{formatNumber(stats.resourceStats?.energyIn?.total)}</td>
+                                                <td>{formatNumber(stats.resourceStats?.energyin?.total)}</td>
                                             </tr>
                                             <tr>
                                                 <td>Total Energy Out</td>
-                                                <td>{formatNumber(stats.resourceStats?.energyOut?.total)}</td>
+                                                <td>{formatNumber(stats.resourceStats?.energyout?.total)}</td>
                                             </tr>
                                             </tbody>
                                         </Table>

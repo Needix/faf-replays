@@ -5,6 +5,7 @@ import GraphUnitsBuiltComponent from "../graph/GraphUnitsBuiltComponent.tsx";
 import GraphUnitsLostComponent from "../graph/GraphUnitsLostComponent.tsx";
 import GraphUnitsKilledComponent from "../graph/GraphUnitsKilledComponent.tsx";
 import {ReplayPreviewComponentProps} from "../types/ReplayPreviewComponentProps.ts";
+import {ReplayPlayerSummary} from "../../api/Api.ts";
 
 
 const ReplaySummaryGraphs = (props: ReplayPreviewComponentProps) => {
@@ -38,7 +39,12 @@ const ReplaySummaryGraphs = (props: ReplayPreviewComponentProps) => {
         }
     };
 
-    if (data.playerScores?.length === 0) {
+    const playerSummaries: ReplayPlayerSummary[] =
+        (props.data?.players ?? []).flatMap((player) =>
+            player.replayPlayerSummary ? [player.replayPlayerSummary] : []
+        );
+
+    if (playerSummaries.length === 0) {
         return "No scores found";
     }
 

@@ -3,10 +3,14 @@ import {Col, Row, Tab, Tabs} from "react-bootstrap";
 import "../css/GraphComponent.css";
 import GraphUtils from "../utils/graphs/GraphUtils.ts";
 import {GraphComponentProps} from "../types/GraphComponentProps.ts";
+import {ReplayPlayerSummary} from "../../api/Api.ts";
 
 const GraphUnitsKilledComponent = (props: GraphComponentProps) => {
 
-    const data = props.data.playerScores ?? [];
+    const data: ReplayPlayerSummary[] =
+        (props.data?.players ?? []).flatMap((player) =>
+            player.replayPlayerSummary ? [player.replayPlayerSummary] : []
+        );
 
     return (
         <Row>
